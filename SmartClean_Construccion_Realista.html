@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmartClean | Contenedor inteligente</title>
+<style>
+:root{--bg:#111214;--panel:#202226;--panel2:#2b2e33;--mint:#ff394d;--blue:#aeb4bd;--muted:#b0b4bc;--white:#f7f7f8;--yellow:#ffc857;--red:#ff394d;--line:#484b52}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% -10%,#54202a 0,transparent 38%),radial-gradient(ellipse at 100% 15%,#33363c 0,transparent 34%),#111214;color:var(--white);font-family:Inter,system-ui,Arial,sans-serif;min-height:100vh}
+main{max-width:1180px;margin:auto;padding:22px 15px 42px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:12px;font-size:1.3rem;font-weight:850;letter-spacing:.5px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#ff394d,#aeb4bd);display:grid;place-items:center;color:#061a18;font-size:25px;box-shadow:0 0 22px #ff394d44}.pill{border:1px solid #2c5962;background:#102e38;padding:8px 12px;border-radius:30px;color:var(--muted);font-size:.8rem}.dot{display:inline-block;width:8px;height:8px;background:var(--yellow);border-radius:50%;margin-right:7px}
+.hero{text-align:center;padding:28px 10px 23px}.eyebrow{color:var(--mint);font-size:.72rem;letter-spacing:3px;font-weight:800}.hero h1{font-size:clamp(2rem,6vw,3.3rem);margin:9px 0 7px;letter-spacing:-1.5px}.hero p{color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:15px}.panel{background:linear-gradient(145deg,#292c31,#191b1f);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 15px 45px #0002;min-width:0}.panel:before{content:'';position:absolute;left:0;top:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#ff394d,#aeb4bd,transparent);opacity:.8}.panel h2{font-size:1rem;margin:0 0 15px}.panel h3{font-size:.9rem;margin:0 0 9px}.bin-area{display:flex;align-items:center;justify-content:center;min-height:260px;position:relative;overflow:hidden;background:radial-gradient(ellipse,#17465388,transparent 68%);border-radius:16px}.bin{width:190px;height:235px;position:relative;filter:drop-shadow(0 15px 18px #0007)}.lid{position:absolute;top:9px;left:-8px;width:206px;height:23px;border-radius:10px 10px 5px 5px;background:linear-gradient(90deg,#54727b,#b5c9cb,#54727b);transform-origin:15px 18px;transform:rotate(-5deg);transition:transform .5s;z-index:4}.bin.open .lid{transform:translate(-12px,-25px) rotate(-32deg)}.bodybin{position:absolute;top:28px;left:10px;width:170px;height:196px;border:5px solid #71949b;border-top:0;border-radius:12px 12px 30px 30px;overflow:hidden;background:linear-gradient(90deg,#294b56,#183943 50%,#294b56)}.rim{position:absolute;top:28px;left:7px;width:176px;height:12px;border-radius:6px;background:#9ab5b9;z-index:3}.fill{position:absolute;bottom:0;left:0;width:100%;height:35%;background:linear-gradient(180deg,#42e6b188,#14a985);transition:height .6s;border-radius:35% 35% 0 0}.trash{position:absolute;inset:0;opacity:.7;background-image:radial-gradient(circle at 25% 30%,#c8fff0 0 4px,transparent 5px),radial-gradient(circle at 68% 50%,#c8fff0 0 5px,transparent 6px),radial-gradient(circle at 40% 72%,#c8fff0 0 4px,transparent 5px);background-size:55px 48px}.level{text-align:center}.percent{font-size:clamp(3rem,8vw,4.6rem);font-weight:850;letter-spacing:-3px;line-height:1}.percent small{font-size:1.2rem;color:var(--muted);letter-spacing:0}.status{display:inline-block;margin:10px 0 16px;padding:8px 14px;border-radius:30px;font-weight:800;font-size:.78rem;background:#163d36;color:var(--mint)}.bar{height:12px;background:#24434d;border-radius:30px;overflow:hidden}.barin{height:100%;width:35%;background:linear-gradient(90deg,var(--mint),var(--blue));border-radius:30px;transition:width .5s}.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:.7rem;margin-top:7px}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}.metric{background:#0b222c;border:1px solid #204550;border-radius:14px;padding:13px;min-width:0}.metric .ico{font-size:1.25rem}.metric strong{display:block;margin:6px 0 3px;font-size:.88rem}.metric span{font-size:.76rem;color:var(--muted);overflow-wrap:anywhere}.lower{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:15px}.wide{grid-column:1/-1}.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.muted,.note{color:var(--muted);font-size:.78rem;line-height:1.5}.note{margin:12px 0 0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}button,input,select{font:inherit}button{border:0;background:var(--mint);color:#05251f;font-weight:800;border-radius:10px;padding:10px 13px;cursor:pointer}button.secondary{background:#1a414d;color:var(--white);border:1px solid #32616b}button.danger{background:#572832;color:#ffdce0;border:1px solid #a34c5a}button:disabled{opacity:.45;cursor:not-allowed}input,select{width:100%;background:#081e27;color:var(--white);border:1px solid #31535d;border-radius:10px;padding:10px;margin:7px 0 10px;outline:none}label{font-size:.78rem;color:var(--muted)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.big{font-size:1.55rem;font-weight:850}.good{color:var(--mint)}.warn{color:var(--yellow)}.bad{color:var(--red)}.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#163d36;color:var(--mint);font-size:.72rem;font-weight:800}.tag.warn{background:#493c20;color:var(--yellow)}.tag.bad{background:#4a252e;color:#ff9aa3}.log{max-height:180px;overflow:auto;padding:0;margin:0;list-style:none}.log li{border-bottom:1px solid #24434d;padding:8px 0;font-size:.78rem;color:var(--muted)}.log b{color:var(--white)}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.statbox{background:#0b222c;border:1px solid #204550;border-radius:13px;padding:12px}.statbox span{display:block;color:var(--muted);font-size:.72rem}.statbox b{font-size:1.5rem}.chart{height:115px;display:flex;align-items:end;gap:8px;padding:12px 5px 0;border-bottom:1px solid #31535d}.daybar{flex:1;min-width:0;background:linear-gradient(180deg,var(--blue),#237b82);border-radius:6px 6px 0 0;position:relative}.daybar small{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:.65rem;color:var(--muted)}.daybar em{position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-size:.65rem;font-style:normal;color:var(--white)}.footer{text-align:center;color:#6f929c;font-size:.72rem;margin-top:22px}
+@media(max-width:760px){.grid,.lower{grid-template-columns:1fr}.wide{grid-column:auto}.panel{padding:15px}.bin-area{min-height:245px}.statgrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:390px){.statgrid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+
+.welcome-mascot{position:fixed;right:18px;bottom:14px;z-index:50;display:flex;align-items:flex-end;gap:10px;pointer-events:none;animation:mascotFloat 3.2s ease-in-out infinite}
+.mascot-bubble{position:relative;max-width:220px;padding:12px 32px 12px 14px;border:1px solid var(--line);border-radius:15px;background:var(--panel);color:var(--white);box-shadow:0 12px 30px #0008;font-size:.78rem;line-height:1.4;pointer-events:auto}
+.mascot-bubble strong{display:block;color:var(--mint);font-size:.86rem;margin-bottom:3px}
+.mascot-close{position:absolute;right:7px;top:5px;background:transparent;color:var(--muted);padding:2px 6px;font-size:1rem}
+.mascot{width:58px;height:68px;position:relative;flex:none;filter:drop-shadow(0 8px 10px #0008)}
+.mascot-head{position:absolute;top:10px;left:4px;width:50px;height:39px;border:2px solid var(--mint);border-radius:14px;background:var(--panel2)}
+.mascot-antenna{position:absolute;top:0;left:27px;width:3px;height:13px;background:var(--mint)}
+.mascot-antenna:after{content:'';position:absolute;top:-3px;left:-4px;width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.mascot-eye{position:absolute;top:12px;width:6px;height:6px;border-radius:50%;background:var(--mint)}
+.mascot-eye.left{left:11px}.mascot-eye.right{right:11px}
+.mascot-smile{position:absolute;left:17px;bottom:6px;width:15px;height:7px;border-bottom:2px solid var(--mint);border-radius:0 0 12px 12px}
+.mascot-body{position:absolute;bottom:0;left:15px;width:30px;height:19px;border:2px solid var(--mint);border-radius:9px 9px 5px 5px;background:var(--panel2)}
+@keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media(max-width:520px){.welcome-mascot{right:8px;bottom:8px;transform:scale(.88);transform-origin:bottom right}.mascot-bubble{max-width:185px}}
+
+
+/* SMARTCLEAN NEXT: acceso, clima, vista pseudo-3D e interacción */
+body.auth-ok .auth-screen{display:none}
+.weather-panel{margin:0 0 15px;position:relative;overflow:hidden}
+.weather-panel:after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:-70px;top:-105px;background:#ff394d12;pointer-events:none}
+.weather-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.weather-head h2{margin:5px 0 0;font-size:1.05rem}.weather-icon{font-size:2.5rem;filter:drop-shadow(0 0 14px #ffcc7744)}
+.weather-location{display:flex;align-items:end;gap:10px;margin-top:12px}.weather-location-input{flex:1;min-width:0}.weather-location input{margin-bottom:0}
+.weather-button{white-space:nowrap;background:linear-gradient(90deg,#ff394d,#aeb4bd);color:#141518}
+.weather-data{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:10px;margin-top:15px}
+.weather-temp,.weather-detail{border:1px solid #49363b;background:linear-gradient(145deg,#292126,#17191d);border-radius:14px;padding:13px;min-width:0}
+.weather-temp strong{display:block;font-size:2.2rem;line-height:1.1}.weather-temp span,.weather-detail span{color:var(--muted);font-size:.76rem}
+.weather-detail{display:flex;flex-direction:column;justify-content:center;gap:8px}.weather-detail b{font-size:1.1rem}
+.bin3d-area{min-height:310px;flex-direction:column;gap:5px;background:radial-gradient(ellipse at 50% 55%,#ff394d20,transparent 65%),linear-gradient(145deg,#17191d,#101114);touch-action:pan-y;cursor:grab;user-select:none}
+.bin3d-area.dragging{cursor:grabbing}
+.bin3d-hint{position:absolute;top:12px;left:14px;color:#aeb4bd;font-size:.62rem;letter-spacing:1.3px;font-weight:800}
+.bin3d-scene{width:100%;height:250px;display:grid;place-items:center;perspective:850px;overflow:visible}
+.bin3d{width:170px;height:220px;position:relative;transform-style:preserve-3d;transform:rotateX(-7deg) rotateY(-25deg);transition:transform .12s linear;filter:drop-shadow(18px 20px 16px #0009)}
+.bin3d-shell{position:absolute;left:9px;top:30px;width:150px;height:174px;transform-style:preserve-3d}
+.bin3d-front{position:absolute;inset:0;border:2px solid #aeb4bd;border-radius:16px 16px 25px 25px;background:linear-gradient(110deg,#555b64 0%,#24272d 23%,#373b42 72%,#17191d 100%);box-shadow:inset 7px 0 12px #ffffff18,inset -8px 0 14px #0008;transform:translateZ(22px);display:flex;align-items:center;flex-direction:column;padding-top:36px;overflow:hidden}
+.bin3d-front:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,#ffffff16,transparent 34%,#0003 78%);pointer-events:none}
+.bin3d-side{position:absolute;right:-44px;top:7px;width:44px;height:166px;transform:rotateY(90deg);transform-origin:left center;background:linear-gradient(90deg,#25282d,#111316);border:2px solid #666b73;border-radius:0 12px 20px 0}
+.bin3d-interior{position:absolute;inset:8px 8px 9px;transform:translateZ(-2px);border:2px solid #8c929a;border-radius:13px 13px 20px 20px;background:linear-gradient(90deg,#101216,#292d33);overflow:hidden}
+.inside-rim{position:absolute;left:-3px;right:-3px;top:0;height:9px;background:linear-gradient(90deg,#aeb4bd,#555b64);z-index:2}
+.inside-fill{position:absolute;bottom:0;left:0;width:100%;height:35%;background:linear-gradient(180deg,#ff6572a8,#b51f34d9);transition:height .5s;overflow:hidden}
+.waste-piece{position:absolute;display:block;width:22px;height:13px;border-radius:5px;background:#d4d8dd;box-shadow:0 2px 4px #0007;transform:rotate(24deg)}
+.piece-a{left:16px;top:12px}.piece-b{right:17px;top:25px;background:#8f969f;transform:rotate(-24deg)}
+.piece-c{left:48px;top:39px;background:#c6cbd1;transform:rotate(10deg)}.piece-d{right:12px;top:55px;background:#737b86}
+.inside-label{position:absolute;top:12px;left:0;right:0;text-align:center;color:#ffffff80;font-size:.55rem;letter-spacing:2px}
+.bin3d-brand{font-size:.58rem;font-weight:900;letter-spacing:1.5px;color:#f4f4f5}
+.bin3d-level{margin-top:16px;font-size:2rem;font-weight:900;color:#fff;text-shadow:0 0 14px #ff394d66}
+.bin3d-level small{font-size:.8rem;color:#c8cbd0}
+.bin3d-levelbar{width:75%;height:6px;background:#111;border-radius:10px;overflow:hidden;margin-top:5px}
+.bin3d-levelbar i{display:block;width:35%;height:100%;background:linear-gradient(90deg,#ff394d,#d5d8dc)}
+.bin3d-led{position:absolute;bottom:13px;width:7px;height:7px;border-radius:50%;background:#ff394d;box-shadow:0 0 12px #ff394d}
+.bin3d-lid{position:absolute;z-index:5;top:19px;left:2px;width:168px;height:20px;border-radius:8px 8px 5px 5px;background:linear-gradient(90deg,#747b84,#e0e2e5,#666d76);transform-origin:12px 17px;transform:rotateX(0deg) rotateZ(-2deg) translateZ(27px);box-shadow:0 5px 8px #0009;transition:transform .4s}
+.bin3d-lid span{position:absolute;left:63px;top:4px;width:42px;height:5px;border-radius:5px;background:#4b5057}
+.bin3d-handle{position:absolute;top:10px;left:64px;width:42px;height:9px;border:3px solid #858b93;border-bottom:0;border-radius:8px 8px 0 0;transform:translateZ(15px)}
+.bin3d-base{position:absolute;left:18px;bottom:0;width:145px;height:14px;border-radius:5px 5px 12px 12px;background:linear-gradient(90deg,#15171b,#555b63,#17191d);transform:rotateX(70deg) translateZ(-4px)}
+.bin3d-controls{display:flex;gap:8px;justify-content:center}.bin3d-controls button{padding:7px 12px;font-size:.75rem}
+.bin3d.open .bin3d-lid{transform:rotateX(0deg) rotateZ(-32deg) translate(-9px,-17px) translateZ(35px)}
+.bin3d-stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:15px}
+.bin3d-stats-strip .statbox{background:linear-gradient(145deg,#2a2024,#17191d);border-color:#56323a}
+.welcome-mascot{right:18px;bottom:14px;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;z-index:100}
+.welcome-mascot.dragging{cursor:grabbing;animation:none}
+.mascot-bubble{cursor:grab}
+@media(max-width:650px){.weather-data{grid-template-columns:repeat(3,1fr)}.weather-temp{grid-column:1/-1;display:flex;align-items:center;gap:14px}.weather-temp strong{font-size:1.8rem}.weather-location{align-items:stretch;flex-direction:column}.weather-button{width:100%}.bin3d-area{min-height:300px}.bin3d-stats-strip{grid-template-columns:repeat(2,1fr)}}
+
+/* Contenedor cilíndrico 3D: volumen redondo realista, no una tarjeta de dos caras */
+.bin3d{width:190px;height:235px;transform:rotateX(-5deg) rotateY(-28deg);transform-style:preserve-3d}
+.bin3d-shell{left:20px;top:42px;width:150px;height:174px;border-radius:48%/12%;overflow:visible;background:radial-gradient(ellipse at 28% 45%,#646b75 0%,#3a3f47 35%,#202329 72%,#101216 100%);border:2px solid #8d949e;box-shadow:inset 13px 0 18px #ffffff20,inset -18px 0 22px #000a,0 12px 18px #0008;}
+.bin3d-shell:before{content:"";position:absolute;left:-2px;right:-2px;top:-9px;height:25px;border:2px solid #b8bec6;border-radius:50%;background:radial-gradient(ellipse at center,#111419 0 55%,#737b86 58%,#343941 75%);box-shadow:0 3px 7px #0009;z-index:4}
+.bin3d-shell:after{content:"";position:absolute;left:7px;right:7px;bottom:-5px;height:18px;border-radius:50%;background:linear-gradient(90deg,#171a20,#69717b 48%,#171a20);border:1px solid #858c96;z-index:-1}
+.bin3d-front{inset:0;border:0;border-radius:48%/12%;background:linear-gradient(90deg,transparent 0%,#ffffff08 18%,#ffffff10 35%,transparent 60%,#0005 100%);box-shadow:none;transform:translateZ(1px);padding-top:38px;overflow:hidden}
+.bin3d-front:after{background:linear-gradient(100deg,#ffffff22,transparent 28%,transparent 65%,#0005 100%);border-radius:48%/12%}
+.bin3d-side{display:none}
+.bin3d-interior{left:12px;right:12px;top:-4px;bottom:auto;height:19px;inset-inline:12px;border:0;border-radius:50%;background:radial-gradient(ellipse,#080a0d 0 58%,#737b85 62%,#343941 76%);transform:translateZ(2px);z-index:5}
+.inside-rim{display:none}
+.inside-fill{left:10%;width:80%;bottom:-40px;height:0;border-radius:50%;}
+.bin3d-lid{top:25px;left:11px;width:168px;height:24px;border-radius:50%;background:linear-gradient(180deg,#e0e3e7,#818892 55%,#444a53);border:1px solid #c3c8cf;transform:translateZ(9px) rotateX(8deg);transform-origin:center;box-shadow:0 6px 10px #000b}
+.bin3d-lid span{left:63px;top:7px}
+.bin3d-handle{top:14px;left:74px;transform:translateZ(18px)}
+.bin3d-base{left:22px;bottom:1px;width:146px;height:18px;border-radius:50%;background:radial-gradient(ellipse,#69717a,#292d34 70%,#111318);transform:rotateX(72deg) translateZ(-4px)}
+.bin3d.open .bin3d-lid{transform:translate(4px,-22px) rotateX(52deg) rotateZ(-9deg) translateZ(15px)}
+.bin3d-hint{content:"MODELO CILÍNDRICO 3D · ARRASTRA PARA GIRAR"}
+
+.build-stage{height:460px;background:radial-gradient(ellipse at 50% 78%,#692632 0,transparent 45%),linear-gradient(145deg,#101216,#252830)}
+.build-caption{bottom:15px;background:linear-gradient(90deg,transparent,#111820dd,transparent);padding:12px 10px;font-size:.92rem;letter-spacing:.02em}
+.build-steps{justify-content:flex-start;max-height:150px;overflow:auto;padding:4px}
+.build-steps span{font-size:.68rem;white-space:nowrap}
+.build-detail-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:14px;margin-top:16px}
+.build-detail-card{background:linear-gradient(145deg,#25282e,#191b20);border:1px solid #41454d;border-radius:15px;padding:17px}
+.build-detail-card h3{margin:0 0 9px;font-size:1rem;color:#fff}
+.build-detail-card p{color:#c5c8ce;line-height:1.55;margin:7px 0}
+.build-detail-card .pin-callout{color:#ffd1d6;background:#49242c;border:1px solid #783743;padding:10px 12px;border-radius:10px;margin-top:10px}
+.pin-table{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:8px}
+.pin-table th,.pin-table td{text-align:left;padding:9px 7px;border-bottom:1px solid #41454d;vertical-align:top}
+.pin-table th{color:#ff9aa5;font-weight:800}
+.build-caution{font-size:.82rem;color:#f0d8a7;background:#383022;border:1px solid #675334;padding:12px;border-radius:12px;margin-top:14px;line-height:1.5}
+@media(max-width:760px){.build-stage{height:390px}.build-detail-grid{grid-template-columns:1fr}.pin-table{font-size:.77rem}}
+
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+.map-panel{margin-top:15px}.map-wrap{height:390px;border:1px solid #484b52;border-radius:15px;overflow:hidden;background:#17191d}.map-caption{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:.76rem}.map-status{color:var(--mint);font-weight:700}
+@media(max-width:600px){.map-wrap{height:320px}}
+</style>
+
+<style>
+.main-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 auto 22px;padding:10px;background:#191b1f;border:1px solid var(--line);border-radius:16px;position:sticky;top:8px;z-index:50;backdrop-filter:blur(12px)}
+.nav-tab{border:1px solid transparent;background:transparent;color:var(--muted);padding:10px 15px;border-radius:11px;font-weight:750;cursor:pointer}.nav-tab:hover,.nav-tab.active{background:#3a2026;border-color:#77313b;color:#fff}.tab-page{display:none;animation:tabIn .28s ease}.tab-page.active{display:block}.tab-page[hidden]{display:none!important}@keyframes tabIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.section-heading{text-align:center;padding:14px 8px 22px}.section-heading h2{font-size:clamp(1.7rem,4vw,2.5rem);margin:8px 0}.section-heading p{color:var(--muted);max-width:720px;margin:0 auto;line-height:1.6}.info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:15px}.info-grid .panel{min-height:190px}.info-grid p,.panel p{line-height:1.65;color:#c4c7cd}.feature-icon{width:48px;height:48px;border-radius:14px;background:#48242b;color:#ff6977;display:grid;place-items:center;font-size:1.55rem;margin-bottom:13px}.build-panel{overflow:hidden}.build-stage{height:370px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:16px;background:radial-gradient(ellipse at 50% 70%,#51232d 0,transparent 48%),linear-gradient(145deg,#17191d,#24272d)}.build-glow{position:absolute;width:260px;height:45px;bottom:48px;border-radius:50%;background:#ff394d22;filter:blur(15px)}.build-bin{position:relative;width:170px;height:225px;transform-style:preserve-3d;transform:perspective(700px) rotateY(-22deg);transition:transform .7s}.build-body{position:absolute;left:14px;top:53px;width:142px;height:158px;border-radius:46%/10%;border:2px solid #8b929c;background:linear-gradient(90deg,#202329,#5b626c 34%,#30353d 72%,#171a1f);box-shadow:inset 13px 0 17px #fff2,inset -15px 0 18px #0009,0 18px 25px #0008;transform:translateY(260px);opacity:0}.build-lid{position:absolute;z-index:4;left:3px;top:34px;width:164px;height:27px;border-radius:50%;border:3px solid #aab1ba;background:linear-gradient(90deg,#292e36,#89919b,#292e36);transform:translateY(-180px) rotateX(50deg);opacity:0}.build-rim{position:absolute;z-index:3;left:13px;top:46px;width:145px;height:20px;border-radius:50%;border:3px solid #aeb5be;background:#171a20;opacity:0}.build-label{position:absolute;z-index:5;top:115px;left:37px;color:#fff;font-size:12px;font-weight:900;letter-spacing:1px;opacity:0}.build-sensor{position:absolute;z-index:6;top:80px;left:82px;width:16px;height:16px;border-radius:50%;background:#ff394d;box-shadow:0 0 18px #ff394d;opacity:0}.build-base{position:absolute;z-index:2;left:22px;bottom:3px;width:126px;height:20px;border-radius:50%;background:linear-gradient(90deg,#15171b,#777f89,#15171b);transform:translateY(90px);opacity:0}.build-bin.step-1 .build-body,.build-bin.step-2 .build-body,.build-bin.step-3 .build-body,.build-bin.step-4 .build-body,.build-bin.step-5 .build-body,.build-bin.step-6 .build-body{transform:translateY(0);opacity:1}.build-bin.step-2 .build-base,.build-bin.step-3 .build-base,.build-bin.step-4 .build-base,.build-bin.step-5 .build-base,.build-bin.step-6 .build-base{transform:translateY(0);opacity:1}.build-bin.step-3 .build-rim,.build-bin.step-4 .build-rim,.build-bin.step-5 .build-rim,.build-bin.step-6 .build-rim{opacity:1}.build-bin.step-4 .build-lid,.build-bin.step-5 .build-lid,.build-bin.step-6 .build-lid{transform:translateY(0) rotateX(0);opacity:1}.build-bin.step-5 .build-sensor,.build-bin.step-6 .build-sensor{opacity:1}.build-bin.step-6 .build-label{opacity:1}.build-caption{position:absolute;bottom:17px;left:12px;right:12px;text-align:center;color:#f1c1c7;font-weight:750}.build-progress{height:7px;border-radius:9px;background:#383c43;overflow:hidden;margin:16px 0 12px}.build-progress div{height:100%;width:0;background:linear-gradient(90deg,#ff394d,#f2a0a9);transition:width .35s}.build-controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.build-steps{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:17px}.build-steps span{font-size:.72rem;padding:7px 9px;border-radius:9px;background:#292c31;color:#9fa4ad}.build-steps span.current{background:#4b242c;color:#fff;border:1px solid #8a3945}.video-placeholder{display:flex;align-items:center;gap:17px;margin-top:15px}.video-icon{width:66px;height:66px;border-radius:18px;background:#48242b;color:#ff6977;display:grid;place-items:center;font-size:1.6rem;flex-shrink:0}.components-pending{max-width:780px;margin:0 auto}.components-pending li{margin:8px 0;color:#c4c7cd}.flow-stack{max-width:800px;margin:0 auto}.flow-card{display:flex;align-items:center;gap:17px;background:linear-gradient(145deg,#292c31,#191b1f);border:1px solid var(--line);border-radius:16px;padding:17px}.flow-card>span{font-weight:900;color:#ff6473;font-size:1.1rem}.flow-card h3{margin:0 0 5px}.flow-card p{margin:0;color:var(--muted);line-height:1.5}.flow-card b{margin-left:auto;font-size:1.5rem;color:#ff6473}.flow-arrow{text-align:center;color:#ff6473;font-size:1.5rem;padding:6px}.footer{margin-top:25px}
+@media(max-width:760px){.info-grid{grid-template-columns:1fr}.nav-tab{padding:9px 10px;font-size:.78rem}.build-stage{height:320px}.video-placeholder{align-items:flex-start}}
+</style>
+
+
+<style>
+/* SmartClean 3D real: escenas WebGL con geometría cilíndrica completa */
+.monitor-layout{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:16px;align-items:center}.monitor-level-side{min-width:0;padding:18px 14px;border-radius:15px;background:linear-gradient(145deg,#241c21,#141619);border:1px solid #57313a;text-align:center}.monitor-level-side .percent{font-size:clamp(2.7rem,5vw,4rem);margin:12px 0}.monitor-level-side .status{font-size:.68rem}.monitor-level-side .note{font-size:.72rem}.monitor-grid{grid-template-columns:1.35fr .8fr}.model3d-frame{position:relative;width:100%;height:370px;overflow:hidden;border-radius:16px;background:radial-gradient(ellipse at 50% 55%,#51232d 0,transparent 58%),linear-gradient(145deg,#111317,#25282e);border:1px solid #484b52;touch-action:pan-y}
+.model3d-frame canvas{display:block;width:100%;height:100%;outline:none}.bin3d.model3d-frame{width:100%;height:280px;position:relative;transform:none;filter:none}
+.model3d-hud{position:absolute;left:13px;top:12px;z-index:2;pointer-events:none;color:#f4d5d9;font-size:.68rem;letter-spacing:1.2px;font-weight:850;text-shadow:0 2px 8px #000}
+.model3d-help{position:absolute;right:12px;bottom:10px;color:#b9bec7;font-size:.68rem;pointer-events:none;text-shadow:0 2px 8px #000}
+.build-stage{height:480px;display:block;padding:0}.build-stage .model3d-frame{height:100%;border:0}
+.build-caption{bottom:18px;z-index:3;text-shadow:0 2px 8px #000}.build-progress{margin-top:15px}
+.build-steps span{transition:all .25s}.build-steps span.current{background:#54232d;border-color:#ff596b;box-shadow:0 0 16px #ff394d30}
+.story-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-bottom:15px}.story-card{background:linear-gradient(145deg,#292c31,#191b1f);border:1px solid var(--line);border-radius:18px;padding:19px}.story-card h3{margin:0 0 9px;color:#fff}.story-card p{margin:0;color:#c4c7cd;line-height:1.7}.objective-panel{margin-top:15px}.objective-panel p{font-size:.96rem;line-height:1.8}.place-chip{display:inline-flex;padding:7px 11px;border-radius:30px;background:#48242b;color:#ffdce0;font-size:.78rem;font-weight:800;margin-top:10px}
+.measure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.measure-card{background:#17191d;border:1px solid #484b52;border-radius:14px;padding:15px}.measure-card h3{margin:0 0 7px}.measure-card p{margin:0;color:#c4c7cd;line-height:1.6;font-size:.87rem}.budget-note{border-left:3px solid #ff596b;padding:12px 15px;background:#291d21;border-radius:0 12px 12px 0;color:#d5d6da;line-height:1.6}
+@media(max-width:760px){.monitor-layout{grid-template-columns:minmax(0,1fr) 132px;gap:8px}.monitor-level-side{padding:12px 8px}.bin3d-area{min-height:290px}.monitor-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.monitor-layout{grid-template-columns:1fr}.monitor-level-side{display:grid;grid-template-columns:auto auto;align-items:center;column-gap:10px;text-align:left}.monitor-level-side .eyebrow,.monitor-level-side .note{grid-column:1/-1}.monitor-level-side .percent{margin:0}.monitor-level-side .status{margin:0}.monitor-level-side .bar,.monitor-level-side .scale{grid-column:1/-1}}
+@media(max-width:650px){.model3d-frame{height:320px}.build-stage{height:390px}.story-grid,.measure-grid{grid-template-columns:1fr}}
+</style>
+
+</head>
+<body>
+
+<main>
+<header class="top"><div class="brand"><div class="logo">♻</div>SMARTCLEAN</div><div class="pill"><span class="dot" id="dot"></span><span id="connectionState">Modo demostración</span></div></header>
+<section class="hero"><div class="eyebrow">INTERNET OF THINGS · ESP32</div><h1>SmartClean</h1><p>Un contenedor inteligente pensado para una comunidad más limpia.</p></section>
+<nav class="main-nav" aria-label="Navegación principal">
+  <button class="nav-tab active" data-tab="monitoreo">⌂ <span>Monitoreo</span></button>
+  <button class="nav-tab" data-tab="proyecto">◎ <span>El proyecto</span></button>
+  <button class="nav-tab" data-tab="construccion">▶ <span>Construcción</span></button>
+  <button class="nav-tab" data-tab="componentes">▦ <span>Componentes</span></button>
+  <button class="nav-tab" data-tab="funcionamiento">⇄ <span>Funcionamiento</span></button>
+</nav>
+<section class="tab-page active" id="tab-monitoreo" aria-labelledby="tab-monitoreo-title">
+
+
+<section class="weather-panel panel" aria-label="Clima en la ubicación del tacho">
+  <div class="weather-head">
+    <div><div class="eyebrow">ENTORNO DEL CONTENEDOR</div><h2>Clima en la zona del tacho</h2></div>
+    <div class="weather-icon" id="weatherIcon">🌤️</div>
+  </div>
+  <div class="weather-location">
+    <div class="weather-location-input"><label for="weatherPlace">Ciudad o sector donde está instalado</label><input id="weatherPlace" placeholder="Ej. Machala, El Oro, Ecuador"></div>
+    <button id="loadWeather" class="weather-button">Consultar clima</button>
+  </div>
+  <div class="weather-data">
+    <div class="weather-temp"><strong id="weatherTemp">--°</strong><span id="weatherDescription">Ubicación pendiente</span></div>
+    <div class="weather-detail"><span>💧 Humedad</span><b id="weatherHumidity">--%</b></div>
+    <div class="weather-detail"><span>🌬️ Viento</span><b id="weatherWind">-- km/h</b></div>
+    <div class="weather-detail"><span>🌧️ Lluvia</span><b id="weatherRain">-- mm</b></div>
+  </div>
+  <p class="note" id="weatherUpdated">Configura la ubicación exacta o aproximada del tacho para consultar sus condiciones meteorológicas.</p>
+</section>
+
+<section class="grid monitor-grid">
+<article class="panel monitor-visual-panel"><h2>Vista tridimensional del contenedor</h2><div class="monitor-layout"><div class="bin-area bin3d-area" id="bin3dArea">
+  <div class="bin3d-hint">SMARTCLEAN · MODELO CILÍNDRICO 360°</div>
+  <div class="model3d-frame bin3d" id="bin3d" style="height:280px;border:0;background:transparent">
+    <div class="model3d-hud">MODELO 3D EN ROTACIÓN</div>
+    <canvas id="monitorModel3D" aria-label="Modelo tridimensional cilíndrico de SmartClean que gira automáticamente"></canvas>
+    <div class="model3d-help">Gira automáticamente · También puedes arrastrarlo</div>
+  </div>
+  <div class="bin3d-controls"><button class="secondary" id="rotateBinLeft" aria-label="Girar a la izquierda">↶</button><button class="secondary" id="resetBinView">Vista frontal</button><button class="secondary" id="rotateBinRight" aria-label="Girar a la derecha">↷</button></div>
+</div><aside class="monitor-level-side"><div class="eyebrow">NIVEL ACTUAL</div><div class="percent"><span id="percent">35</span><small>%</small></div><div class="status" id="status">NIVEL MEDIO</div><div class="bar"><div class="barin" id="bar"></div></div><div class="scale"><span>Vacío</span><span>Lleno</span></div><p class="note">Porcentaje estimado de ocupación del contenedor.</p></aside></div><div class="muted" style="text-align:center" id="lidMessage">Tapa cerrada · Lista para recibir residuos</div></article>
+<article class="panel"><h2>Estado del contenedor SmartClean</h2><div class="metrics" style="margin-top:0"><div class="metric"><div class="ico">📡</div><strong>Sensor de nivel</strong><span id="sensorState">Simulación activa</span></div><div class="metric"><div class="ico">🗑️</div><strong>Estado del tacho</strong><span id="binState">En funcionamiento</span></div><div class="metric"><div class="ico">🚪</div><strong>Tapa automática</strong><span id="lidState">Cerrada</span></div><div class="metric"><div class="ico">🔒</div><strong>Bloqueo por llenado</strong><span id="lockState">Desactivado</span></div></div><p class="note" id="fullNotice">El sistema bloqueará nuevas aperturas al llegar al límite configurado.</p></article>
+</section>
+
+<section class="lower">
+
+
+<article class="panel"><h2>👥 Actividad del contenedor</h2><div class="statgrid"><div class="statbox"><span>Eventos hoy</span><b id="todayUsers">0</b></div><div class="statbox"><span>Esta semana</span><b id="weekUsers">0</b></div><div class="statbox"><span>Este mes</span><b id="monthUsers">0</b></div></div><p class="note">Estas cifras son demostrativas y se guardan localmente en este navegador hasta conectar el registro real de eventos.</p><div class="actions"><button class="secondary" id="clearStats">Reiniciar estadísticas de demostración</button></div></article>
+
+<article class="panel"><h2>📊 Estadísticas de uso</h2><div class="row"><span class="muted">Registros de actividad · últimos 7 días</span><b id="totalDeposits">0 en total</b></div><div class="chart" id="weekChart"></div></article>
+
+<article class="panel"><h2>☀️ Panel solar y batería</h2><div class="metrics" style="margin-top:0"><div class="metric"><span>Voltaje del panel</span><strong class="big" id="solarVoltage">-- V</strong></div><div class="metric"><span>Corriente</span><strong class="big" id="solarCurrent">-- A</strong></div><div class="metric"><span>Batería</span><strong class="big" id="battery">-- %</strong></div><div class="metric"><span>Estado del panel</span><strong id="solarState">Sin datos</strong><span id="solarAdvice">Esperando sensores</span></div></div><p class="note">Para medir el estado se necesita un sensor de voltaje/corriente y lectura de batería. La web puede advertir de valores bajos, pero no diagnostica suciedad física del panel por sí sola.</p></article>
+
+<article class="panel wide map-panel"><div class="row"><div><div class="eyebrow">COBERTURA GEOGRÁFICA</div><h2>🗺️ Mapa inteligente de SmartClean · Provincia de El Oro</h2></div><span class="tag">MAPA EN VIVO</span></div><p class="muted">Vista provincial con calles y lugares. El marcador del tacho aparecerá cuando el ESP32 envíe coordenadas GPS válidas.</p><div id="smartcleanMap" class="map-wrap" role="application" aria-label="Mapa de la provincia de El Oro"></div><div class="map-caption"><span id="mapStatus" class="map-status">Esperando ubicación GPS del ESP32</span><span id="mapCoordinates">Sin coordenadas recibidas</span></div><p class="note">El mapa utiliza OpenStreetMap. Para ubicar el tacho automáticamente, conecta un módulo GPS al ESP32 y envía los campos <code>latitud</code> y <code>longitud</code> en el JSON. Sin GPS, el mapa muestra la provincia, pero no inventa la posición del contenedor.</p></article>
+
+<article class="panel"><h2>🚨 Seguridad y ubicación</h2><div class="row"><span>Alarma antimanipulación</span><span class="tag" id="alarmTag">INACTIVA</span></div><p id="alarmMessage" class="muted">No se detecta manipulación.</p><div class="metric"><span>Ubicación reportada por el ESP32</span><strong id="locationText">Sin coordenadas GPS</strong><span id="locationAccuracy">La ubicación requiere GPS o una ubicación configurada.</span></div><div class="actions"><button class="danger" id="testAlarm">Probar alarma</button><button class="secondary" id="stopAlarm">Silenciar prueba</button><a id="mapLink" href="#" target="_blank" rel="noopener" style="display:none;color:var(--blue);align-self:center">Ver ubicación en mapa</a></div><p class="note">La detección real requiere un sensor de inclinación, vibración o apertura no autorizada. La ubicación precisa requiere GPS; el navegador no puede inventarla.</p></article>
+
+<article class="panel"><h2>🌙 Iluminación automática y asistente de voz</h2><div class="two"><div class="metric"><span>Iluminación</span><strong id="lightState" class="big">Apagada</strong><span id="lightMode">Sensor de luz sin datos</span></div><div class="metric"><span>Asistente de voz</span><strong id="voiceState" class="big">Listo</strong><span>Mensaje de bienvenida</span></div></div><div class="actions"><button class="secondary" id="nightDemo">Simular noche</button><button class="secondary" id="dayDemo">Simular día</button><button id="speak">Probar mensaje de voz</button></div><p class="note">Las luces necesitan un sensor LDR/fotocelda y un módulo de potencia. La voz de esta página se reproduce en el dispositivo que abre la web; para que hable el tacho, el ESP32 necesita un módulo de audio/altavoz.</p></article>
+
+<article class="panel"><h2>🔌 Conexión con tu ESP32</h2><label for="endpoint">Dirección del ESP32 (ej. http://192.168.1.50/estado)</label><input id="endpoint" placeholder="http://IP-DE-TU-ESP32/estado"><div class="actions"><button id="connect">Conectar</button><button class="secondary" id="demo">Modo demostración</button></div><p class="note">Consulta el endpoint cada 2 segundos. El ESP32 debe responder JSON y permitir CORS si la página está alojada en otro servidor. Revisa el formato de datos al final de esta página.</p></article>
+
+<article class="panel"><h2>📋 Registro de eventos</h2><ul class="log" id="eventLog"><li>SmartClean iniciado en modo demostración.</li></ul></article>
+
+<article class="panel wide"><h2>🧩 Otro módulo: control de iluminación exterior</h2><p class="muted">Este módulo puede funcionar como proyecto complementario independiente: un sensor LDR detecta oscuridad y el ESP32 enciende las luces automáticamente. El panel muestra el estado recibido.</p><div class="row"><div><span class="muted">Estado actual</span><div class="big" id="outdoorLight">Apagado</div></div><div><span class="muted">Modo</span><div class="big" id="outdoorMode">Automático</div></div><span class="tag" id="lightTag">DÍA</span></div></article>
+
+<article class="panel wide"><h2>Formato JSON recomendado para el ESP32</h2><p class="muted">Puedes ampliar tu respuesta <code>/estado</code> con estos campos. Los nombres son los que esta página reconoce:</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere;background:#081e27;padding:12px;border-radius:10px;color:#bdeee0;font-size:.75rem">{
+  "porcentaje": 82,
+  "tapa": "cerrada",
+  "lleno": false,
+  "usuarios_hoy": 12,
+  "usuarios_semana": 54,
+  "usuarios_mes": 180,
+  "voltaje_panel": 6.2,
+  "corriente_panel": 0.8,
+  "bateria": 87,
+  "alarma": false,
+  "latitud": -3.258,
+  "longitud": -79.956,
+  "luz": "encendida",
+  "es_noche": false
+}</pre><p class="note"><b>Importante:</b> cuando el tacho esté lleno, el ESP32 debe impedir físicamente que el servo abra la tapa. La página solo refleja ese bloqueo; no sustituye la lógica de seguridad del microcontrolador.</p></article>
+</section>
+</section>
+
+<section class="tab-page" id="tab-proyecto" hidden>
+  <div class="section-heading"><div class="eyebrow">CONOCE SMARTCLEAN</div><h2>Una idea para mejorar el manejo de los residuos</h2><p>SmartClean nace de una situación cotidiana: muchas veces el contenedor está en un lugar público y no se sabe con facilidad cuánto espacio le queda antes de necesitar que lo vacíen.</p><span class="place-chip">Proyecto pensado para Arenillas · El Oro, Ecuador</span></div>
+  <div class="story-grid">
+    <article class="story-card"><div class="feature-icon">💡</div><h3>¿De dónde nació la idea?</h3><p>La idea surgió al pensar en cómo se puede aprovechar la tecnología para resolver algo que vemos todos los días. Un tacho común cumple su función, pero no avisa cuándo está llegando a su capacidad. De ahí nació la propuesta de convertirlo en un contenedor inteligente, capaz de revisar su propio nivel y facilitar el trabajo de quienes se encargan de mantener limpio el espacio.</p></article>
+    <article class="story-card"><div class="feature-icon">⚠</div><h3>¿Qué problemática queremos atender?</h3><p>Cuando no existe una forma sencilla de conocer el estado de los contenedores, las revisiones pueden hacerse tarde o sin una referencia clara. Esto puede provocar que un tacho permanezca lleno más tiempo del necesario, que se desborde o que el personal tenga que revisar varios puntos sin saber cuál necesita atención primero. SmartClean busca ayudar a prevenir esas situaciones mediante información del propio contenedor.</p></article>
+    <article class="story-card"><div class="feature-icon">♻</div><h3>¿Qué solución proponemos?</h3><p>Proponemos un contenedor SmartClean equipado con sensores y un ESP32. Los sensores obtienen mediciones, el microcontrolador las interpreta y el sistema puede activar mecanismos del tacho, como una tapa automática, según la configuración final del prototipo. Así, el contenedor deja de ser únicamente un recipiente y se convierte en un dispositivo que puede informar sobre su estado.</p></article>
+    <article class="story-card"><div class="feature-icon">📍</div><h3>¿Dónde se podría utilizar?</h3><p>La primera aplicación que proponemos es en Arenillas, provincia de El Oro, Ecuador. Podría instalarse como prototipo en un espacio de uso común, una institución educativa, un parque o un punto de recolección, siempre que exista autorización y condiciones adecuadas. La ubicación definitiva se definirá con el equipo y con el lugar donde se realicen las pruebas.</p></article>
+  </div>
+  <article class="panel objective-panel"><div class="eyebrow">NUESTRO PROPÓSITO</div><h2>Objetivo del proyecto</h2><p>Desarrollar un contenedor inteligente de residuos que permita conocer de manera más sencilla y oportuna su nivel de llenado, utilizando sensores electrónicos y un ESP32 para obtener y procesar información del interior del tacho. Buscamos que el dispositivo pueda detectar cuándo el recipiente se está llenando, apoyar la apertura automática de la tapa mediante un mecanismo controlado y ofrecer datos útiles para organizar su revisión y vaciado. Con este prototipo queremos demostrar que la tecnología puede aplicarse a una necesidad real de nuestra comunidad, comenzando con una propuesta pensada para Arenillas, El Oro, y promoviendo espacios más limpios, ordenados y responsables con el ambiente.</p><p class="note">La descripción presenta la idea y el propósito del equipo. Los detalles finales de sensores, mecanismos, ubicación exacta y resultados se ajustarán a lo que realmente construyan y prueben.</p></article>
+</section>
+
+<section class="tab-page" id="tab-construccion" hidden>
+  <div class="section-heading"><div class="eyebrow">ENSAMBLAJE DIGITAL · SECUENCIA TÉCNICA 3D</div><h2>Construcción de SmartClean, pieza por pieza</h2><p>Una secuencia cinematográfica en varias fases: primero se arma y prueba la electrónica sobre el protoboard, después se prepara el contenedor, se instalan los sensores y mecanismos, se fija la electrónica protegida y finalmente se integra todo en un solo SmartClean.</p></div>
+  <article class="panel build-panel">
+    <div class="build-stage" id="buildStage">
+      <div class="model3d-frame" id="assemblyModelFrame">
+        <div class="model3d-hud">SMARTCLEAN · ENSAMBLAJE TÉCNICO 3D · 360°</div>
+        <canvas id="assemblyModel3D" aria-label="Secuencia 3D de construcción de SmartClean"></canvas>
+        <div class="build-caption" id="buildCaption">FASE 01 · Preparación del protoboard y componentes electrónicos</div>
+        <div class="model3d-help">Arrastra para girar · usa la rueda para acercar · la cámara enfoca cada conjunto</div>
+      </div>
+    </div>
+    <div class="build-progress"><div id="buildProgress"></div></div>
+    <div class="build-controls"><button id="playBuild">▶ Reproducir construcción</button><button class="secondary" id="restartBuild">↻ Reiniciar desde el inicio</button><button class="secondary" id="nextBuild">Siguiente paso →</button></div>
+    <div class="build-steps" id="buildSteps"></div>
+    <div class="build-detail-grid">
+      <article class="build-detail-card">
+        <div class="eyebrow">PIEZA Y MONTAJE</div>
+        <h3 id="buildPartTitle">01 · Preparación de la electrónica</h3>
+        <p id="buildPartDescription">Se identifican los módulos antes de conectarlos.</p>
+        <p id="buildPartLocation"></p>
+        <div class="pin-callout" id="buildPartPins"></div>
+      </article>
+      <article class="build-detail-card">
+        <div class="eyebrow">MAPA DE CONEXIONES PROPUESTO</div>
+        <h3>ESP32 DevKit · referencia inicial</h3>
+        <table class="pin-table">
+          <thead><tr><th>Elemento</th><th>Conexión ESP32</th><th>Nota</th></tr></thead>
+          <tbody>
+            <tr><td>Sensor de nivel HC-SR04</td><td>TRIG → GPIO 5<br>ECHO → GPIO 18</td><td>ECHO requiere divisor de voltaje a 3.3 V</td></tr>
+            <tr><td>Sensor de mano IR</td><td>OUT → GPIO 27</td><td>Confirmar salida lógica del módulo</td></tr>
+            <tr><td>Servo de tapa</td><td>Señal → GPIO 26</td><td>Alimentación 5 V externa adecuada</td></tr>
+            <tr><td>Alimentación</td><td>GND común</td><td>Unir tierras de ESP32, sensores y fuente del servo</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </div>
+    <div class="build-caution"><strong>Importante:</strong> este mapa es una propuesta didáctica para una placa ESP32 DevKit y módulos compatibles, no el cableado confirmado de su prototipo. Los GPIO pueden cambiar según la placa, el sensor y el código. No conecten el servo directamente al pin 3V3 del ESP32; usen una fuente regulada apropiada y tierra común. El pin ECHO de muchos HC-SR04 entrega 5 V y debe adaptarse a 3.3 V antes de entrar al ESP32. Cuando compartas fotos y modelos exactos de los componentes, ajustaré cada pin y la animación a su montaje real.</div>
+  </article>
+</section>
+
+<section class="tab-page" id="tab-componentes" hidden>
+  <div class="section-heading"><div class="eyebrow">PIEZAS DE SMARTCLEAN</div><h2>¿Qué elementos puede necesitar?</h2><p>Esta es una propuesta inicial para organizar el diseño. La lista definitiva se completará con los componentes que realmente compró y utilizó el equipo.</p></div>
+  <div class="info-grid">
+    <article class="panel"><div class="feature-icon">🧠</div><h3>ESP32</h3><p>Es la placa de control del prototipo. Recibe información de los sensores, ejecuta la lógica programada y controla los dispositivos conectados.</p><span class="tag warn">Propuesta por confirmar</span></article>
+    <article class="panel"><div class="feature-icon">📡</div><h3>Sensor ultrasónico</h3><p>Puede colocarse en la parte superior, orientado hacia el interior, para medir la distancia hasta los residuos y estimar el nivel de llenado.</p><span class="tag warn">Propuesta por confirmar</span></article>
+    <article class="panel"><div class="feature-icon">⚙</div><h3>Servomotor</h3><p>Puede instalarse cerca de la bisagra o soporte de la tapa para moverla cuando el sistema reciba la orden correspondiente.</p><span class="tag warn">Propuesta por confirmar</span></article>
+    <article class="panel"><div class="feature-icon">🔋</div><h3>Alimentación eléctrica</h3><p>Una batería o fuente adecuada entrega energía al ESP32 y a los módulos. El diseño debe considerar el consumo del servomotor.</p><span class="tag warn">Modelo por confirmar</span></article>
+    <article class="panel"><div class="feature-icon">🔌</div><h3>Cables y conexiones</h3><p>Permiten unir sensores, placa y actuadores. Se deben ordenar y proteger para evitar tirones, falsos contactos o humedad.</p><span class="tag warn">Por documentar</span></article>
+    <article class="panel"><div class="feature-icon">🛠</div><h3>Estructura y soportes</h3><p>Son las piezas que sostienen la placa, el sensor y el mecanismo de la tapa dentro o sobre el cuerpo del contenedor.</p><span class="tag warn">Diseño por confirmar</span></article>
+  </div>
+  <article class="panel"><h3>Distribución inicial sugerida</h3><ul><li>Sensor de nivel: en la cara interior de la tapa o en la parte superior, apuntando hacia abajo.</li><li>Servomotor: junto a la bisagra o al mecanismo que transmite el movimiento a la tapa.</li><li>ESP32: sujeto a un soporte protegido en un lateral del tacho, lejos del agua y de golpes.</li><li>Batería y regulador: en un compartimento protegido y accesible para mantenimiento.</li><li>Cables: sujetos a la estructura y separados de las partes móviles.</li></ul><p class="note">La posición final dependerá de las dimensiones del tacho, el tipo de tapa y los modelos reales de los componentes.</p></article>
+</section>
+
+<section class="tab-page" id="tab-funcionamiento" hidden>
+  <div class="section-heading"><div class="eyebrow">DEL SENSOR A LA ACCIÓN</div><h2>¿Cómo trabaja SmartClean?</h2><p>El funcionamiento se explica desde el propio contenedor: qué detecta, cómo procesa las lecturas y qué mecanismos puede activar.</p></div>
+  <div class="flow-stack">
+    <article class="flow-card"><span>01</span><div><h3>El sensor revisa el espacio interior</h3><p>Un sensor de distancia instalado en la parte superior puede medir cuánto espacio queda entre la tapa y los residuos.</p></div><b>◉</b></article><div class="flow-arrow">↓</div>
+    <article class="flow-card"><span>02</span><div><h3>El ESP32 interpreta la medición</h3><p>La placa recibe la distancia y, conociendo la altura útil del recipiente, puede calcular un porcentaje aproximado de llenado.</p></div><b>⌘</b></article><div class="flow-arrow">↓</div>
+    <article class="flow-card"><span>03</span><div><h3>Se controla el mecanismo de la tapa</h3><p>Si el diseño incorpora detección de proximidad y un servomotor, el ESP32 puede ordenar la apertura y el cierre de la tapa. El movimiento debe limitarse para evitar forzar el mecanismo.</p></div><b>⚙</b></article><div class="flow-arrow">↓</div>
+    <article class="flow-card"><span>04</span><div><h3>El sistema identifica cuándo necesita atención</h3><p>El programa compara el nivel calculado con límites definidos por el equipo. Así puede indicar si el tacho está bajo, a media capacidad o cerca de llenarse.</p></div><b>✓</b></article>
+  </div>
+  <article class="panel" style="margin-top:15px"><h2>¿Qué mediciones se pueden tomar?</h2><div class="measure-grid">
+    <div class="measure-card"><h3>📏 Distancia interior</h3><p>Medición entre el sensor superior y la superficie de los residuos. Es el dato principal para estimar el llenado.</p></div>
+    <div class="measure-card"><h3>🗑 Porcentaje de llenado</h3><p>Valor calculado a partir de la altura útil del tacho y la distancia medida. Debe calibrarse con las dimensiones reales.</p></div>
+    <div class="measure-card"><h3>🔋 Estado de alimentación</h3><p>Si se incorpora un circuito de medición adecuado, se puede supervisar el voltaje de la batería.</p></div>
+    <div class="measure-card"><h3>🚪 Estado de la tapa</h3><p>Se puede registrar si la tapa está abierta o cerrada, siempre que el diseño tenga un sensor o una referencia fiable de posición.</p></div>
+  </div></article>
+  <article class="panel" style="margin-top:15px"><h2>Instalación y organización del prototipo</h2><p>La estructura del tacho sirve como soporte del sistema. El sensor de nivel se ubica arriba y apunta hacia el fondo; el servomotor se coloca junto al eje o bisagra de la tapa; el ESP32 se fija en un soporte lateral protegido; y la alimentación se guarda en un compartimento que permita revisarla sin desmontar todo el contenedor. Los cables deben quedar ordenados, aislados y fuera del recorrido de la tapa.</p><p class="note">Esta distribución es una guía de diseño. Antes de perforar o fijar piezas, hay que comprobar las medidas, el recorrido del servo, la tensión de alimentación y la protección frente a humedad.</p></article>
+  <article class="panel" style="margin-top:15px"><h2>Presupuesto del proyecto</h2><p>El costo total se calculará sumando el tacho o estructura, placa ESP32, sensores, servomotor, fuente o batería, cables, soportes y materiales de montaje.</p><div class="budget-note"><b>Presupuesto pendiente de cotización:</b> no colocamos un total inventado. Cuando tengas los modelos y precios reales de cada pieza, preparo una tabla con cantidad, precio unitario, subtotal y total en dólares.</div></article>
+</section>
+
+<div class="footer">SMARTCLEAN · ESP32 · MONITOREO INTELIGENTE DE CONTENEDORES</div>
+</main>
+<div class="welcome-mascot" id="welcomeMascot" aria-live="polite">
+ <div class="mascot-bubble"><button class="mascot-close" id="closeMascot" aria-label="Cerrar saludo">×</button>
+  <strong>¡Bienvenido a SmartClean!</strong>SmartClean: monitoreo inteligente para cuidar el entorno.
+ </div>
+ <div class="mascot" aria-hidden="true"><div class="mascot-antenna"></div>
+  <div class="mascot-head"><span class="mascot-eye left"></span><span class="mascot-eye right"></span><span class="mascot-smile"></span></div><div class="mascot-body"></div>
+ </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+const $=id=>document.getElementById(id);
+let timer=null,demoTimer=null,demoValue=35,alarmSound=null,alarmOsc=null;
+const storageKey='smartclean_stats_v2';
+let stats=loadStats();
+function loadStats(){try{return JSON.parse(localStorage.getItem(storageKey))||{events:[]}}catch(e){return{events:[]}}}
+function saveStats(){localStorage.setItem(storageKey,JSON.stringify(stats))}
+function log(msg){const li=document.createElement('li');li.innerHTML='<b>'+new Date().toLocaleTimeString()+'</b> · '+msg;$('eventLog').prepend(li);while($('eventLog').children.length>20)$('eventLog').lastChild.remove()}
+function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function renderStats(){
+ const now=new Date(),today=dateKey(now),month=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+ const startWeek=new Date(now);startWeek.setHours(0,0,0,0);startWeek.setDate(now.getDate()-6);
+ const events=stats.events||[];const todayN=events.filter(e=>dateKey(new Date(e.time))===today).length;
+ const week=events.filter(e=>new Date(e.time)>=startWeek);const monthN=events.filter(e=>dateKey(new Date(e.time)).startsWith(month)).length;
+ $('todayUsers').textContent=todayN;$('weekUsers').textContent=week.length;$('monthUsers').textContent=monthN;
+ $('totalDeposits').textContent=events.length+' en total';
+ const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dateKey(d);days.push({label:d.toLocaleDateString('es',{weekday:'short'}),n:events.filter(e=>dateKey(new Date(e.time))===k).length})}
+ const max=Math.max(1,...days.map(x=>x.n));$('weekChart').innerHTML=days.map(x=>'<div class="daybar" style="height:'+Math.max(5,x.n/max*80)+'px"><em>'+x.n+'</em><small>'+x.label+'</small></div>').join('');
+}
+function paint(p,lid,locked){
+ p=Math.max(0,Math.min(100,Number(p)||0));const full=locked===true||locked===1||locked==='true'||p>=100;
+ $('percent').textContent=Math.round(p);$('bar').style.width=p+'%';if($('fill'))$('fill').style.height=p+'%';
+  const b3p=$('bin3dPercent'),b3b=$('bin3dBar'),inside=$('insideFill');if(b3p)b3p.textContent=Math.round(p);if(b3b)b3b.style.width=p+'%';if(inside)inside.style.height=p+'%';
+ const s=full?'CONTENEDOR LLENO':p<=30?'NIVEL BAJO':p<=70?'NIVEL MEDIO':'CASI LLENO';
+ $('status').textContent=s;$('status').className='status '+(full?'bad':p>70?'warn':'');
+ $('binState').textContent=full?'Requiere vaciado':s;$('lockState').textContent=full?'ACTIVO · No abrir':'Desactivado';
+ $('lockState').style.color=full?'var(--red)':'var(--mint)';$('fullNotice').textContent=full?'TACHO LLENO: requiere vaciado. La tapa debe permanecer bloqueada hasta que se vacíe.':'El sistema permitirá el uso mientras no se alcance el límite de llenado.';
+ const open=!full&&(lid===true||lid===1||lid==='abierta'||lid==='open');$('lidState').textContent=full?'Bloqueada':open?'Abierta':'Cerrada';if($('bin'))$('bin').classList.toggle('open',open);
+ $('lidMessage').textContent=full?'Tapa bloqueada: vaciar el contenedor para habilitarla.':open?'Tapa abierta':'Tapa cerrada · Lista para recibir residuos';
+  const b3=$('bin3d');if(b3)b3.classList.toggle('open',open);
+}
+function solar(d){const v=Number(d.voltaje_panel??d.solar_voltage),a=Number(d.corriente_panel??d.solar_current),b=d.bateria??d.battery;if(Number.isFinite(v)&&v>0)$('solarVoltage').textContent=v.toFixed(2)+' V';if(Number.isFinite(a)&&a>=0)$('solarCurrent').textContent=a.toFixed(2)+' A';if(b!==undefined)$('battery').textContent=Number(b)+' %';if(Number.isFinite(v)||b!==undefined){const low=(Number.isFinite(v)&&v<4)||(b!==undefined&&Number(b)<25);$('solarState').textContent=low?'Revisar':'Operativo';$('solarState').className=low?'warn':'good';$('solarAdvice').textContent=low?'Revisar carga, conexiones y panel':'Lecturas dentro de lo esperado'}}
+function security(d){if(d.alarma!==undefined||d.tamper!==undefined){const active=!!(d.alarma??d.tamper);$('alarmTag').textContent=active?'ALERTA ACTIVA':'INACTIVA';$('alarmTag').className='tag '+(active?'bad':'');$('alarmMessage').textContent=active?'¡Alerta! Se detectó manipulación del tacho.':'No se detecta manipulación.';if(active)log('ALERTA: manipulación detectada por el ESP32')}
+ const lat=Number(d.latitud??d.latitude),lon=Number(d.longitud??d.longitude);if(Number.isFinite(lat)&&Number.isFinite(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){$('locationText').textContent=lat.toFixed(5)+', '+lon.toFixed(5);$('locationAccuracy').textContent='Coordenadas recibidas desde el ESP32';updateSmartCleanMap(lat,lon)} }
+function update(d){
+ const p=d.porcentaje??d.percent??d.nivel;if(p!==undefined)paint(p,d.tapa??d.servo,d.lleno??d.bloqueado);
+ ['usuarios_hoy','usuarios_semana','usuarios_mes'].forEach((k,i)=>{const id=['todayUsers','weekUsers','monthUsers'][i];if(d[k]!==undefined)$(id).textContent=d[k]});
+  solar(d);security(d);
+ if(d.luz!==undefined||d.es_noche!==undefined){const on=String(d.luz??(d.es_noche?'encendida':'apagada')).toLowerCase()==='encendida'||d.es_noche===true;$('lightState').textContent=on?'Encendida':'Apagada';$('outdoorLight').textContent=on?'Encendida':'Apagado';$('lightMode').textContent='Control reportado por ESP32';$('lightTag').textContent=on?'NOCHE':'DÍA'}
+}
+function stop(){if(timer)clearInterval(timer);timer=null;if(demoTimer)clearInterval(demoTimer);demoTimer=null}
+function setConnected(ok,msg){$('connectionState').textContent=msg;$('dot').style.background=ok?'#42e6b1':ok===false?'#ff6b78':'#ffd166'}
+async function poll(url){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();update(d);setConnected(true,'ESP32 conectado');$('sensorState').textContent='Datos recibidos';$('updated')?.textContent;log('Datos actualizados desde ESP32')}catch(e){setConnected(false,'Sin conexión');$('sensorState').textContent=e.message}}
+function demo(){stop();setConnected(null,'Modo demostración');$('sensorState').textContent='Simulación activa';demoTimer=setInterval(()=>{demoValue=Math.max(5,Math.min(100,demoValue+(Math.random()*7-2)));paint(demoValue,false);},3500)}
+$('connect').onclick=()=>{const url=$('endpoint').value.trim();if(!url){alert('Escribe la dirección del ESP32.');return}stop();setConnected(null,'Conectando…');poll(url);timer=setInterval(()=>poll(url),2000)};
+$('demo').onclick=demo;
+$('clearStats').onclick=()=>{if(confirm('¿Reiniciar las estadísticas guardadas en este navegador?')){stats={events:[]};saveStats();renderStats();log('Estadísticas reiniciadas')}};
+$('testAlarm').onclick=()=>{if(alarmOsc)return;try{const C=window.AudioContext||window.webkitAudioContext;if(C){alarmSound=new C();alarmOsc=alarmSound.createOscillator();const gain=alarmSound.createGain();alarmOsc.type='sine';alarmOsc.frequency.value=880;alarmOsc.connect(gain);gain.connect(alarmSound.destination);gain.gain.value=.08;alarmOsc.start();}}catch(e){}$('alarmTag').textContent='PRUEBA ACTIVA';$('alarmTag').className='tag bad';$('alarmMessage').textContent='Prueba local de alarma. No es una alerta real del tacho.';log('Prueba local de alarma iniciada')};
+$('stopAlarm').onclick=()=>{try{if(alarmOsc){alarmOsc.stop();alarmOsc=null}if(alarmSound){alarmSound.close();alarmSound=null}}catch(e){}$('alarmTag').textContent='INACTIVA';$('alarmTag').className='tag';$('alarmMessage').textContent='Alarma de prueba silenciada.'};
+$('nightDemo').onclick=()=>{['lightState','outdoorLight'].forEach(id=>$(id).textContent=id==='lightState'?'Encendida':'Encendido');$('lightMode').textContent='Simulación de oscuridad';$('outdoorMode').textContent='Automático';$('lightTag').textContent='NOCHE'};
+$('dayDemo').onclick=()=>{['lightState','outdoorLight'].forEach(id=>$(id).textContent='Apagada');$('lightMode').textContent='Simulación de luz de día';$('lightTag').textContent='DÍA'};
+$('speak').onclick=()=>{const msg='Gracias por utilizar nuestro basurero inteligente. ¡Ayúdanos a mantener limpio el ambiente!';if('speechSynthesis'in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(msg));$('voiceState').textContent='Reproduciendo'}else alert(msg)};
+$('mapLink').onclick=e=>{if($('mapLink').getAttribute('href')==='#')e.preventDefault()};
+
+
+// Clima actual por geocodificación de ciudad/sector usando Open-Meteo.
+const weatherCodes={0:['Despejado','☀️'],1:['Mayormente despejado','🌤️'],2:['Parcialmente nublado','⛅'],3:['Nublado','☁️'],45:['Niebla','🌫️'],48:['Niebla','🌫️'],51:['Llovizna ligera','🌦️'],53:['Llovizna','🌦️'],55:['Llovizna intensa','🌧️'],61:['Lluvia ligera','🌦️'],63:['Lluvia moderada','🌧️'],65:['Lluvia intensa','🌧️'],71:['Nieve ligera','🌨️'],73:['Nieve','🌨️'],75:['Nieve intensa','❄️'],80:['Chubascos','🌦️'],81:['Chubascos moderados','🌧️'],82:['Chubascos fuertes','⛈️'],95:['Tormenta','⛈️'],96:['Tormenta con granizo','⛈️'],99:['Tormenta fuerte','⛈️']};
+async function loadWeather(){
+  const place=$('weatherPlace').value.trim();
+  if(!place){$('weatherUpdated').textContent='Escribe la ciudad o sector donde está el tacho.';return}
+  $('weatherUpdated').textContent='Buscando ubicación y consultando el clima…';
+  try{
+    const geo=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(place)+'&count=1&language=es&format=json');
+    if(!geo.ok)throw Error('No se pudo buscar la ubicación');
+    const gj=await geo.json();if(!gj.results||!gj.results.length)throw Error('No encontramos esa zona. Prueba con ciudad y provincia.');
+    const loc=gj.results[0];
+    const url='https://api.open-meteo.com/v1/forecast?latitude='+loc.latitude+'&longitude='+loc.longitude+'&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&timezone=auto';
+    const resp=await fetch(url);if(!resp.ok)throw Error('No se pudieron obtener los datos meteorológicos');
+    const data=await resp.json(),c=data.current,desc=weatherCodes[c.weather_code]||['Condición no disponible','🌡️'];
+    $('weatherTemp').textContent=Math.round(c.temperature_2m)+'°C';
+    $('weatherDescription').textContent=desc[0]+' · '+loc.name+(loc.admin1?', '+loc.admin1:'');
+    $('weatherIcon').textContent=desc[1];
+    $('weatherHumidity').textContent=c.relative_humidity_2m+'%';
+    $('weatherWind').textContent=c.wind_speed_10m+' km/h';
+    $('weatherRain').textContent=c.precipitation+' mm';
+    $('weatherUpdated').textContent='Sensación térmica: '+Math.round(c.apparent_temperature)+'°C · Actualizado: '+new Date(c.time).toLocaleString('es-EC')+' · Fuente: Open-Meteo';
+    localStorage.setItem('smartclean_weather_place',place);
+  }catch(err){$('weatherUpdated').textContent=err.message+'. Comprueba tu conexión a internet.'}
+}
+$('loadWeather').addEventListener('click',loadWeather);
+$('weatherPlace').value=localStorage.getItem('smartclean_weather_place')||'';
+
+// El modelo de monitoreo ahora usa una escena 3D WebGL; sus controles se conectan al módulo Three.js.
+
+// El asistente se puede arrastrar por toda la pantalla para no tapar indicadores.
+const mascot=$('welcomeMascot');let mascotDrag=false,mascotStartX=0,mascotStartY=0,mascotLeft=0,mascotTop=0;
+mascot.addEventListener('pointerdown',e=>{
+  if(e.target.closest('button'))return;
+  mascotDrag=true;const r=mascot.getBoundingClientRect();mascotStartX=e.clientX;mascotStartY=e.clientY;mascotLeft=r.left;mascotTop=r.top;
+  mascot.classList.add('dragging');mascot.style.right='auto';mascot.style.bottom='auto';mascot.style.left=r.left+'px';mascot.style.top=r.top+'px';mascot.setPointerCapture(e.pointerId);e.preventDefault();
+});
+mascot.addEventListener('pointermove',e=>{
+  if(!mascotDrag)return;const x=Math.max(0,Math.min(innerWidth-mascot.offsetWidth,mascotLeft+e.clientX-mascotStartX));const y=Math.max(0,Math.min(innerHeight-mascot.offsetHeight,mascotTop+e.clientY-mascotStartY));mascot.style.left=x+'px';mascot.style.top=y+'px';
+});
+function stopMascotDrag(){mascotDrag=false;mascot.classList.remove('dragging')}
+mascot.addEventListener('pointerup',stopMascotDrag);mascot.addEventListener('pointercancel',stopMascotDrag);
+
+// Mapa provincial: vista inicial de El Oro; el marcador solo aparece con GPS real del ESP32.
+let smartcleanMap=null,smartcleanMarker=null;
+function initSmartCleanMap(){
+ if(!window.L||!$('smartcleanMap')){$('mapStatus').textContent='No se pudo cargar el mapa. Revisa internet.';return}
+ smartcleanMap=L.map('smartcleanMap',{scrollWheelZoom:false}).setView([-3.55,-79.85],9);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(smartcleanMap);
+ const oroBounds=L.latLngBounds([[-3.95,-80.25],[-3.15,-79.45]]);
+ smartcleanMap.fitBounds(oroBounds);
+}
+function updateSmartCleanMap(lat,lon){
+ if(!smartcleanMap)initSmartCleanMap();
+ if(!smartcleanMap)return;
+ const point=[lat,lon];
+ if(!smartcleanMarker)smartcleanMarker=L.marker(point).addTo(smartcleanMap).bindPopup('<b>Contenedor SmartClean</b><br>Ubicación recibida desde el ESP32');
+ else smartcleanMarker.setLatLng(point);
+ smartcleanMap.setView(point,16);
+ $('mapStatus').textContent='Ubicación GPS actualizada desde el ESP32';
+ $('mapCoordinates').textContent=lat.toFixed(5)+', '+lon.toFixed(5);
+}
+initSmartCleanMap();
+
+
+// Navegación entre apartados de SmartClean.
+document.querySelectorAll('.nav-tab').forEach(btn=>btn.addEventListener('click',()=>{
+  const target=btn.dataset.tab;
+  document.querySelectorAll('.nav-tab').forEach(x=>x.classList.toggle('active',x===btn));
+  document.querySelectorAll('.tab-page').forEach(page=>{const active=page.id==='tab-'+target;page.classList.toggle('active',active);page.hidden=!active;});
+  if(target==='monitoreo'&&smartcleanMap){setTimeout(()=>smartcleanMap.invalidateSize(),120)}
+  if(target==='construccion'){setTimeout(()=>window.smartCleanAssembly?.play(),180)}
+}));
+
+// Controles de la secuencia de ensamblaje 3D (motor Three.js).
+$('playBuild').onclick=()=>window.smartCleanAssembly?.toggle();
+$('restartBuild').onclick=()=>window.smartCleanAssembly?.restart();
+$('nextBuild').onclick=()=>window.smartCleanAssembly?.next();
+
+renderStats();paint(35,false);demo();log('Panel listo. Estadísticas guardadas en este navegador.');
+const mascotClose=document.getElementById('closeMascot');if(mascotClose)mascotClose.onclick=()=>document.getElementById('welcomeMascot').remove();
+</script>
+
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+function makeScene(canvasId, frameId, assembly=false){
+ const canvas=document.getElementById(canvasId), frame=document.getElementById(frameId); if(!canvas||!frame)return null;
+ const scene=new THREE.Scene(); scene.background=new THREE.Color(0x17191e);
+ const camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(5.8,4.1,7.5);camera.lookAt(0,1.25,0);
+ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;
+ scene.add(new THREE.HemisphereLight(0xcbd8ed,0x25212a,2.0));
+ const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(4,7,5);scene.add(key);
+ const red=new THREE.PointLight(0xff344f,34,10);red.position.set(-3,2.4,2);scene.add(red);
+ const floor=new THREE.Mesh(new THREE.CircleGeometry(3.2,64),new THREE.MeshStandardMaterial({color:0x24262c,roughness:.88,metalness:.15}));floor.rotation.x=-Math.PI/2;floor.position.y=-.05;scene.add(floor);
+ const group=new THREE.Group();scene.add(group);
+ const workbench=new THREE.Group();scene.add(workbench);
+ const benchTop=new THREE.Mesh(new THREE.BoxGeometry(3.3,.16,2.1),new THREE.MeshStandardMaterial({color:0x30343b,metalness:.35,roughness:.62}));
+ benchTop.position.set(1.55,.12,.65);workbench.add(benchTop);
+ const benchLegMat=new THREE.MeshStandardMaterial({color:0x171b22,metalness:.55,roughness:.4});
+ for(const x of [.1,3.0])for(const z of [-.2,1.5]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.12,.85,.12),benchLegMat);leg.position.set(1.55+x-1.55,-.38,.65+z-.65);workbench.add(leg)}
+ workbench.visible=false;
+ const metal=new THREE.MeshStandardMaterial({color:0x68717d,metalness:.82,roughness:.24});
+ const brushed=new THREE.MeshStandardMaterial({color:0x424a55,metalness:.72,roughness:.38});
+ const plastic=new THREE.MeshStandardMaterial({color:0x20252d,metalness:.12,roughness:.72});
+ const dark=new THREE.MeshStandardMaterial({color:0x242a33,metalness:.58,roughness:.35});
+ const redmat=new THREE.MeshStandardMaterial({color:0xc92d42,metalness:.48,roughness:.3});
+ const black=new THREE.MeshStandardMaterial({color:0x11151b,metalness:.35,roughness:.42});
+ const boardmat=new THREE.MeshStandardMaterial({color:0x17664d,metalness:.25,roughness:.55});
+ const parts={};
+ function part(name,mesh,pos){mesh.position.set(...pos);mesh.userData.home=new THREE.Vector3(...pos);mesh.userData.name=name;group.add(mesh);parts[name]=mesh;return mesh}
+ // Recipiente cilíndrico completo, con grosor visual, pared y boca circular.
+ const body=part('cuerpo',new THREE.Mesh(new THREE.CylinderGeometry(1.08,1.18,2.35,128,1,true),new THREE.MeshStandardMaterial({color:0x535d69,metalness:.62,roughness:.34,side:THREE.DoubleSide})),[0,1.22,0]);
+ // Refuerzos verticales discretos y panel frontal para un acabado industrial.
+ const ribs=new THREE.Group();for(let i=0;i<12;i++){const a=i*Math.PI*2/12;const rib=new THREE.Mesh(new THREE.BoxGeometry(.035,2.12,.035),brushed);rib.position.set(Math.sin(a)*1.09,1.22,Math.cos(a)*1.09);rib.rotation.y=a;ribs.add(rib)}part('refuerzos',ribs,[0,0,0]);
+ const frontPanel=part('panelFrontal',new THREE.Mesh(new THREE.BoxGeometry(.48,.62,.055),plastic),[0,1.15,1.09]);
+ const inner=part('interior',new THREE.Mesh(new THREE.CylinderGeometry(1.015,1.10,2.27,72,1,true),new THREE.MeshStandardMaterial({color:0x171b21,side:THREE.BackSide,roughness:.8})),[0,1.22,0]);
+ const bottom=part('fondo',new THREE.Mesh(new THREE.CylinderGeometry(1.1,1.1,.12,72),dark),[0,.08,0]);
+ const base=part('base',new THREE.Mesh(new THREE.CylinderGeometry(1.23,1.23,.16,72),dark),[0,-.02,0]);
+ const rim=part('aro',new THREE.Mesh(new THREE.TorusGeometry(1.08,.075,16,96),metal),[0,2.42,0]);rim.rotation.x=Math.PI/2;
+ const lidPivot=new THREE.Group();lidPivot.position.set(0,2.53,-.9);group.add(lidPivot);lidPivot.userData.home=new THREE.Vector3(0,2.53,-.9);parts.tapa=lidPivot;
+ const lid=new THREE.Mesh(new THREE.CylinderGeometry(1.17,1.17,.16,96),redmat);lid.position.set(0,0,.9);lidPivot.add(lid);
+ const lidTop=new THREE.Mesh(new THREE.CylinderGeometry(1.08,1.08,.035,96),metal);lidTop.position.set(0,.095,.9);lidPivot.add(lidTop);
+ const hinge=part('bisagra',new THREE.Mesh(new THREE.BoxGeometry(.42,.18,.24),metal),[0,2.48,-.95]);
+ // ESP32 DevKit conceptual: PCB, blindaje, USB, dos hileras de pines y serigrafía.
+ const espGroup=new THREE.Group();
+ const pcb=new THREE.Mesh(new THREE.BoxGeometry(.92,.055,.52),new THREE.MeshStandardMaterial({color:0x17634e,metalness:.2,roughness:.55}));espGroup.add(pcb);
+ const moduleShield=new THREE.Mesh(new THREE.BoxGeometry(.43,.035,.31),new THREE.MeshStandardMaterial({color:0x9aa3ad,metalness:.82,roughness:.25}));moduleShield.position.set(-.12,.045,0);espGroup.add(moduleShield);
+ const mcu=new THREE.Mesh(new THREE.BoxGeometry(.19,.035,.16),black);mcu.position.set(.29,.047,0);espGroup.add(mcu);
+ const usb=new THREE.Mesh(new THREE.BoxGeometry(.19,.11,.16),new THREE.MeshStandardMaterial({color:0xb9c0c8,metalness:.9,roughness:.2}));usb.position.set(.48,.015,0);espGroup.add(usb);
+ const pinMat=new THREE.MeshStandardMaterial({color:0xd9b66d,metalness:.8,roughness:.25});
+ for(let i=0;i<15;i++)for(const side of [-1,1]){
+   const pin=new THREE.Mesh(new THREE.BoxGeometry(.026,.12,.026),pinMat);
+   pin.position.set(-.38+i*.054,-.075,side*.235);espGroup.add(pin);
+   const socket=new THREE.Mesh(new THREE.BoxGeometry(.045,.035,.045),black);
+   socket.position.set(-.38+i*.054,-.025,side*.235);espGroup.add(socket);
+ }
+ // Serigrafía de pines clave visible al acercar la cámara.
+ const pinLabelCanvas=document.createElement('canvas');pinLabelCanvas.width=512;pinLabelCanvas.height=128;
+ const pinCtx=pinLabelCanvas.getContext('2d');pinCtx.fillStyle='#123c32';pinCtx.fillRect(0,0,512,128);
+ pinCtx.font='bold 34px Arial';pinCtx.fillStyle='#f2f5ed';pinCtx.fillText('5V  GND  3V3  5  18  27  26',12,78);
+ const pinTexture=new THREE.CanvasTexture(pinLabelCanvas);
+ const pinLabel=new THREE.Mesh(new THREE.PlaneGeometry(.82,.18),new THREE.MeshBasicMaterial({map:pinTexture,transparent:true,side:THREE.DoubleSide}));
+ pinLabel.position.set(0,.09,-.19);espGroup.add(pinLabel);
+ // Tiny status LEDs and tactile reset/boot switches.
+ for(let i=0;i<2;i++){const led=new THREE.Mesh(new THREE.BoxGeometry(.035,.012,.025),new THREE.MeshBasicMaterial({color:i?0x35d7a0:0xff3f52}));led.position.set(.18+i*.07,.035,-.13);espGroup.add(led)}
+ for(let i=0;i<2;i++){const sw=new THREE.Mesh(new THREE.BoxGeometry(.07,.045,.07),metal);sw.position.set(.27+i*.12,.055,.18);espGroup.add(sw)}
+ part('esp32',espGroup,[1.55,.355,.65]);
+ const mount=part('soporte',new THREE.Mesh(new THREE.BoxGeometry(.12,.58,.68),dark),[1.13,1.2,.05]);
+ // Caja posterior estanca y separadores para fijar el conjunto electrónico al tacho.
+ const rearBoxGroup=new THREE.Group();
+ const rearBack=new THREE.Mesh(new THREE.BoxGeometry(1.78,1.12,.16),new THREE.MeshStandardMaterial({color:0x202731,metalness:.45,roughness:.48}));
+ rearBoxGroup.add(rearBack);
+ const rearRim=new THREE.Mesh(new THREE.BoxGeometry(1.88,1.22,.06),new THREE.MeshStandardMaterial({color:0x626d79,metalness:.72,roughness:.32}));
+ rearRim.position.z=-.10;rearBoxGroup.add(rearRim);
+ for(let i=0;i<4;i++){const standoff=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.12,16),metal);standoff.rotation.x=Math.PI/2;standoff.position.set(i%2? .72:-.72,i<2? .43:-.43,.11);rearBoxGroup.add(standoff)}
+ part('cajaPosterior',rearBoxGroup,[0,1.25,-1.22]);
+ // Servo y brazo mecánico.
+ const servoGroup=new THREE.Group();servoGroup.add(new THREE.Mesh(new THREE.BoxGeometry(.52,.32,.42),blueMaterial()));
+ const servoTop=new THREE.Mesh(new THREE.BoxGeometry(.2,.1,.2),metal);servoTop.position.y=.2;servoGroup.add(servoTop);
+ const horn=new THREE.Mesh(new THREE.BoxGeometry(.62,.045,.08),redmat);horn.position.set(.27,.28,0);servoGroup.add(horn);
+ part('servo',servoGroup,[-.95,2.38,-.7]);
+ // Sensor ultrasónico: placa con dos transductores circulares.
+ const sensorGroup=new THREE.Group();const sensorBoard=new THREE.Mesh(new THREE.BoxGeometry(.62,.09,.27),boardmat);sensorGroup.add(sensorBoard);
+ for(let i=0;i<2;i++){let disc=new THREE.Mesh(new THREE.CylinderGeometry(.105,.105,.07,32),metal);disc.rotation.x=Math.PI/2;disc.position.set(i*.28-.14,.015,.18);sensorGroup.add(disc);let innerDisc=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.075,32),black);innerDisc.rotation.x=Math.PI/2;innerDisc.position.set(i*.28-.14,.015,.22);sensorGroup.add(innerDisc)}
+ part('sensor',sensorGroup,[0,2.16,0]);sensorGroup.rotation.x=-.15;
+ // Sensor infrarrojo de proximidad para detectar la mano cerca de la tapa.
+ const handGroup=new THREE.Group();const handBoard=new THREE.Mesh(new THREE.BoxGeometry(.42,.10,.22),boardmat);handGroup.add(handBoard);
+ for(let i=0;i<2;i++){const eye=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.08,32),black);eye.rotation.x=Math.PI/2;eye.position.set(i*.18-.09,.02,.13);handGroup.add(eye)}
+ part('sensorMano',handGroup,[0,2.18,1.12]);
+ // Protoboard de tamaño visible, con matriz de contactos, canal central y rieles.
+ const breadGroup=new THREE.Group();
+ const breadBase=new THREE.Mesh(new THREE.BoxGeometry(1.55,.105,.88),new THREE.MeshStandardMaterial({color:0xe7e5dc,roughness:.82}));
+ breadGroup.add(breadBase);
+ const holeMat=new THREE.MeshStandardMaterial({color:0x30343a,metalness:.25,roughness:.6});
+ for(let x=0;x<25;x++)for(let z=0;z<10;z++){
+   if(z===4||z===5)continue;
+   const hole=new THREE.Mesh(new THREE.CylinderGeometry(.014,.014,.012,8),holeMat);
+   hole.position.set(-.69+x*.057,.058,-.31+z*.069);breadGroup.add(hole);
+ }
+ const redRail=new THREE.Mesh(new THREE.BoxGeometry(1.42,.012,.018),new THREE.MeshStandardMaterial({color:0xc83b4c}));
+ redRail.position.set(0,.06,.385);breadGroup.add(redRail);
+ const blueRail=redRail.clone();blueRail.material=new THREE.MeshStandardMaterial({color:0x3978b8});blueRail.position.z=-.385;breadGroup.add(blueRail);
+ const channel=new THREE.Mesh(new THREE.BoxGeometry(1.43,.014,.055),new THREE.MeshStandardMaterial({color:0xc7c5bd}));
+ channel.position.y=.061;breadGroup.add(channel);
+ part('protoboard',breadGroup,[1.55,.255,.65]);
+ // Batería y caja protectora.
+ const batteryGroup=new THREE.Group();const battery=new THREE.Mesh(new THREE.BoxGeometry(.78,.42,.5),dark);batteryGroup.add(battery);const cap=new THREE.Mesh(new THREE.BoxGeometry(.25,.05,.12),metal);cap.position.y=.23;batteryGroup.add(cap);
+ part('bateria',batteryGroup,[-1.18,.52,.25]);
+ // Cableado curvo desde la placa hacia sensor y servo.
+ const wireMat=new THREE.MeshStandardMaterial({color:0xff465b,metalness:.25,roughness:.45});
+ function wire(points){const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));return new THREE.Mesh(new THREE.TubeGeometry(curve,32,.018,8,false),wireMat)}
+ const cable1=part('cableSensor',wire([[1.25,1.28,.12],[.95,1.8,.18],[.35,2.15,.12],[0,2.2,.1]]),[0,0,0]);
+ const cable2=part('cableServo',wire([[1.25,1.12,.1],[.5,1.65,-.35],[-.4,2.2,-.6],[-.9,2.4,-.65]]),[0,0,0]);
+ const cable3=part('cableMano',wire([[1.25,1.3,.1],[.75,1.8,.5],[.3,2.1,.9],[0,2.18,1.12]]),[0,0,0]);
+ const cable4=part('cableAlimentacion',wire([[1.55,.5,.65],[1.2,.55,.35],[.85,.8,.1],[.55,1.05,-.2]]),[0,0,0]);
+
+ // Identificación frontal discreta.
+ const badge=part('marca',new THREE.Mesh(new THREE.BoxGeometry(.62,.28,.035),redmat),[0,1.5,1.13]);
+ // Segmentos de nivel visibles dentro del recipiente.
+ const fillMat=new THREE.MeshStandardMaterial({color:0x36b58a,transparent:true,opacity:.65,roughness:.8});
+ const fill=part('nivel',new THREE.Mesh(new THREE.CylinderGeometry(.94,.98,1,64),fillMat),[0,.5,0]);
+ const buildSteps=[
+  {title:'01 · Inventario y preparación del protoboard',part:'Protoboard de pruebas',desc:'Se coloca el protoboard sobre una superficie aislante. Se identifican los rieles positivo y negativo y se separan los módulos antes de alimentar el circuito.',loc:'Mesa de trabajo: el protoboard todavía está fuera del contenedor.',pins:'Todavía no se energiza el circuito. Primero se verifica continuidad y orientación de cada módulo.',show:['protoboard'],workbench:true,focus:[1.55,.32,.65],zoom:4.6},
+  {title:'02 · Presentación de la placa ESP32',part:'ESP32 DevKit',desc:'La placa de control se coloca en el protoboard dejando accesibles sus pines laterales. Es el cerebro que leerá sensores y enviará la orden al servo.',loc:'Protoboard: ubicar la placa atravesando la ranura central, sin forzar los pines.',pins:'Referencia: GPIO 5, GPIO 18, GPIO 27 y GPIO 26. Confirmar la serigrafía de la placa real.',show:['protoboard','esp32'],workbench:true,focus:[1.55,.32,.65],zoom:3.7},
+  {title:'03 · Cableado de alimentación y tierra',part:'Jumpers de alimentación',desc:'Se distribuyen las líneas de alimentación y GND. La fuente del servo debe dimensionarse por separado; la tierra de esa fuente se comparte con la tierra del ESP32.',loc:'Protoboard: rieles laterales. Mantener cables cortos, ordenados y con colores diferenciados.',pins:'GND común. No alimentar el servo desde el pin 3V3. Verificar voltajes antes de conectar.',show:['protoboard','esp32','cableSensor','cableServo','cableMano','cableAlimentacion'],workbench:true,focus:[1.55,.32,.65],zoom:3.7},
+  {title:'04 · Instalación del sensor de nivel',part:'Sensor ultrasónico HC-SR04 (propuesto)',desc:'El sensor mide la distancia desde la parte superior hacia el contenido. Se monta mirando verticalmente hacia el interior, sin que la tapa ni las paredes bloqueen sus transductores.',loc:'En la cara inferior de la tapa o en un soporte fijo en la parte superior interna del tacho, apuntando hacia abajo.',pins:'TRIG → GPIO 5; ECHO → GPIO 18 mediante divisor de voltaje para bajar 5 V a 3.3 V; VCC según el módulo.',show:['sensor'],focus:[0,2.16,0],zoom:5.0},
+  {title:'05 · Prueba del sensor de nivel en protoboard',part:'Lectura de distancia',desc:'Antes de instalarlo, se comprueba que la lectura cambie al acercar y alejar una superficie de prueba. El porcentaje se calcula en el programa usando la altura útil del recipiente.',loc:'En protoboard: sensor conectado con jumpers y orientado hacia un espacio libre.',pins:'TRIG GPIO 5 y ECHO GPIO 18 con adaptación de nivel. La calibración depende de la altura real del tacho.',show:['sensor','protoboard','esp32'],workbench:true,focus:[1.55,.32,.65],zoom:4.0},
+  {title:'06 · Instalación del sensor de mano',part:'Sensor infrarrojo de proximidad',desc:'Este módulo detecta la mano cerca de la zona de apertura. La detección envía una señal digital al ESP32 para iniciar la apertura automática.',loc:'En el frente superior del tacho, cerca de la tapa, orientado hacia la zona donde se acerca la mano.',pins:'OUT → GPIO 27 como referencia; VCC y GND según el módulo. Confirmar que OUT no supere 3.3 V.',show:['sensorMano'],focus:[0,2.18,1.12],zoom:4.7},
+  {title:'07 · Prueba de detección de la mano',part:'Sensor de proximidad + ESP32',desc:'Se ajusta la sensibilidad y la distancia de detección para evitar aperturas involuntarias. El programa debe incluir un tiempo de espera para que la tapa no se cierre inmediatamente.',loc:'Prueba sobre el protoboard antes de fijar el sensor al contenedor.',pins:'Señal OUT del sensor al GPIO 27. El comportamiento final depende del modelo real del módulo.',show:['sensorMano','esp32','protoboard'],workbench:true,focus:[1.55,.32,.65],zoom:4.0},
+  {title:'08 · Preparación del mecanismo de apertura',part:'Servomotor',desc:'Se presenta el servo y su brazo mecánico. El brazo debe transmitir el movimiento a la tapa sin trabarse ni exigir fuerza excesiva.',loc:'En un soporte firme junto a la bisagra, alineado con el punto de empuje o tirante de la tapa.',pins:'Señal PWM → GPIO 26 como referencia. Alimentación del servo desde fuente regulada externa; GND común.',show:['servo','bisagra'],focus:[-.95,2.38,-.7],zoom:4.6},
+  {title:'09 · Montaje de la bisagra',part:'Bisagra y soporte',desc:'La bisagra sostiene la tapa y define su eje de giro. Se comprueba manualmente que el recorrido sea libre antes de unir el servo.',loc:'Borde posterior superior del tacho. Alinear el eje de la bisagra con el giro de la tapa.',pins:'Pieza mecánica: no ocupa un GPIO. El servo se conecta eléctricamente al ESP32.',show:['bisagra'],focus:[0,2.48,-.95],zoom:4.8},
+  {title:'10 · Acoplamiento del servo a la tapa',part:'Servo, brazo y tapa',desc:'Se une el brazo del servo al mecanismo de la tapa. Se ajustan topes de apertura y cierre en el código para que el servo no golpee el final de carrera.',loc:'Servo fijado en soporte lateral/posterior; brazo conectado a la tapa mediante una unión mecánica.',pins:'GPIO 26 controla la señal. Nunca bloquear el eje ni forzar el servo con la mano mientras está energizado.',show:['servo','tapa','bisagra'],focus:[-.7,2.45,-.45],zoom:4.2},
+  {title:'11 · Prueba de apertura automática',part:'Sensor de mano + servomotor',desc:'Al detectar una mano, el ESP32 ordena al servo abrir la tapa; tras un intervalo configurable, la cierra suavemente si ya no hay detección.',loc:'Prueba del conjunto de tapa y servo antes de instalarlo definitivamente.',pins:'Sensor OUT → GPIO 27; señal del servo → GPIO 26; alimentación del servo externa y GND común.',show:['sensorMano','servo','tapa','esp32'],focus:[0,2.2,.8],zoom:4.4},
+  {title:'12 · Preparación de la batería y regulación',part:'Batería y módulo regulador',desc:'Se define una alimentación estable para la placa y otra capacidad de corriente suficiente para el servo. La batería debe tener protección y regulación adecuadas al diseño.',loc:'Compartimento protegido en la parte posterior o inferior, separado de humedad y residuos.',pins:'No conectar una batería desconocida directamente a VIN/5V. La tensión y el regulador se determinan según la batería y la placa exactas.',show:['bateria'],workbench:true,focus:[1.55,.32,.65],zoom:4.2},
+  {title:'13 · Ordenamiento de jumpers y señales',part:'Cableado de sensores y servo',desc:'Se ordenan los cables para evitar que rocen con la tapa o queden expuestos al movimiento. Se identifican señal, alimentación y tierra.',loc:'Desde cada módulo hacia el protoboard y la placa ESP32, siguiendo rutas protegidas.',pins:'HC-SR04: GPIO 5/18; sensor de mano: GPIO 27; servo: GPIO 26. Pines de ejemplo pendientes de validar.',show:['cableSensor','cableServo','cableMano','sensor','sensorMano','servo'],focus:[.2,1.7,.5],zoom:5.1},
+  {title:'14 · Prueba integral sobre protoboard',part:'Circuito electrónico completo',desc:'Se prueba el sensor de nivel, el sensor de mano y el servo por separado y luego en conjunto. Se revisan reinicios, lecturas inestables y caídas de alimentación.',loc:'Todo el circuito permanece sobre el protoboard en la mesa, antes de instalarlo en el tacho.',pins:'Comprobar GND común, voltajes, adaptación de ECHO y fuente del servo. No continuar si hay calentamiento anormal.',show:['protoboard','esp32','sensor','sensorMano','servo','bateria','cableSensor','cableServo','cableMano','cableAlimentacion'],workbench:true,focus:[1.55,.32,.65],zoom:4.0},
+  {title:'15 · Preparación del contenedor físico',part:'Cuerpo cilíndrico SmartClean',desc:'Se selecciona el tacho que se utilizará. Se mide la altura interior, el diámetro de la boca y el espacio posterior para soportes y cableado.',loc:'Zona de montaje: cuerpo cilíndrico, borde superior y parte posterior.',pins:'Todavía no hay conexiones en el tacho. Las dimensiones reales determinan dónde caben los módulos.',show:['cuerpo','fondo','base','aro','interior','refuerzos','panelFrontal'],focus:[0,1.2,0],zoom:6.2},
+  {title:'16 · Fijación de sensores y mecanismo al tacho',part:'Sensores, bisagra y tapa',desc:'Se fijan el sensor de nivel apuntando hacia abajo y el sensor de mano en la zona frontal. Después se monta la bisagra y se alinea el servo con la tapa.',loc:'Sensor de nivel: interior superior; sensor de mano: frente superior; servo y bisagra: borde posterior.',pins:'Los cables deben entrar por pasacables o canaleta y quedar protegidos. Evitar que el cableado interfiera con el movimiento.',show:['cuerpo','fondo','base','aro','interior','sensor','sensorMano','bisagra','servo','tapa'],focus:[0,2.1,.3],zoom:4.8},
+  {title:'17 · Instalación de la electrónica en la parte posterior',part:'Caja protectora con ESP32 y protoboard',desc:'El protoboard y el ESP32 se colocan dentro de una caja protectora fijada atrás del contenedor. Se deja acceso para mantenimiento y ventilación según el diseño.',loc:'Parte posterior exterior del tacho, en una caja protegida contra salpicaduras y contacto con residuos.',pins:'La caja protege la electrónica; las conexiones mantienen el mapa GPIO validado en las pruebas de banco.',show:['cuerpo','fondo','base','aro','interior','sensor','sensorMano','bisagra','servo','tapa','soporte','esp32','protoboard','cajaPosterior','bateria','cableSensor','cableServo','cableMano','cableAlimentacion'],rearMount:true,backView:true,focus:[0,1.25,-1.25],zoom:4.4},
+  {title:'18 · Integración final y revisión de SmartClean',part:'SmartClean ensamblado',desc:'Se integran cuerpo, sensores, tapa automática, servo, batería y electrónica protegida. Se realiza una última prueba de apertura, medición de llenado y estabilidad de alimentación.',loc:'Vista general del contenedor terminado, con la electrónica fijada en su caja posterior.',pins:'El prototipo solo se considera terminado cuando se comprueban las conexiones reales y el programa definitivo.',show:['cuerpo','fondo','base','aro','interior','refuerzos','panelFrontal','sensor','sensorMano','bisagra','servo','tapa','soporte','esp32','protoboard','cajaPosterior','bateria','cableSensor','cableServo','cableMano','cableAlimentacion','marca','nivel'],rearMount:true,backView:true,focus:[0,1.25,-1.15],zoom:6.2}
+ ];
+ const sequence=['cuerpo','fondo','base','aro','interior','refuerzos','panelFrontal','sensor','sensorMano','bisagra','servo','tapa','soporte','esp32','protoboard','cajaPosterior','bateria','cableSensor','cableServo','cableMano','cableAlimentacion','marca','nivel'];
+ let stage=assembly?0:buildSteps.length-1,playing=false,startTime=0,pausedAt=0,drag=false,lastX=0,lastY=0,rx=-.12,ry=-.35;
+ const stageDuration=3600,totalDuration=stageDuration*buildSteps.length;
+ function stageAt(t){return Math.min(buildSteps.length-1,Math.floor(t/stageDuration))}
+ function applyStage(st,t=st*stageDuration){
+   stage=Math.max(0,Math.min(buildSteps.length-1,st));
+   const step=buildSteps[stage],progress=Math.max(0,Math.min(1,(t-stage*stageDuration)/stageDuration));
+   workbench.visible=!!step.workbench;
+   const shown=new Set(step.show);
+   for(const name of sequence){
+     const obj=parts[name];if(!obj)continue;
+     const visible=shown.has(name);obj.visible=visible;
+     const home=obj.userData.home||new THREE.Vector3();
+     const benchPositions={
+       sensor:[.75,.48,.45],sensorMano:[2.25,.48,.45],servo:[.85,.55,1.15],
+       bisagra:[1.9,.55,1.15],bateria:[2.25,.5,1.15],cableSensor:[1.35,.58,.7],
+       cableServo:[1.55,.58,.75],cableMano:[1.75,.58,.8],cableAlimentacion:[1.45,.58,.9]
+     };
+     if(step.workbench&&benchPositions[name]){
+       obj.position.set(...benchPositions[name]);
+     }
+     if(name==='protoboard'||name==='esp32'){
+       const target=step.rearMount
+         ? (name==='protoboard'?new THREE.Vector3(0,1.25,-1.37):new THREE.Vector3(0,1.25,-1.48))
+         : home;
+       const startPos=home.clone();
+       const blend=step.rearMount?Math.max(0,Math.min(1,(progress-.18)/.62)):0;
+       const eased=blend*blend*(3-2*blend);
+       obj.position.copy(startPos).lerp(target,eased);
+       if(name==='protoboard'||name==='esp32')obj.rotation.x=step.rearMount?THREE.MathUtils.lerp(0,-Math.PI/2,eased):0;
+     }
+     if(assembly&&visible&&progress<.92){
+       const raw=Math.max(0,Math.min(1,(progress-.08)*1.25));
+       const k=raw*raw*(3-2*raw);
+       const offset=new THREE.Vector3(home.x*.12,1.15+(sequence.indexOf(name)%3)*.18,home.z*.12);
+       obj.position.copy(home).addScaledVector(offset,1-k);
+       obj.scale.setScalar(.84+.16*k);
+     }else{
+       if((name==='protoboard'||name==='esp32')&&step.rearMount){
+         obj.position.set(0,name==='protoboard'?1.25:1.25,name==='protoboard'?-1.37:-1.48);
+         obj.rotation.x=-Math.PI/2;
+       }else if(step.workbench&&benchPositions[name]){
+         obj.position.set(...benchPositions[name]);
+         if(name==='protoboard'||name==='esp32')obj.rotation.x=0;
+       }else{obj.position.copy(home);if(name==='protoboard'||name==='esp32')obj.rotation.x=0}
+       obj.scale.setScalar(1)
+     }
+   }
+   const caption=document.getElementById('buildCaption'),bar=document.getElementById('buildProgress');
+   if(caption)caption.textContent=step.title;
+   if(bar)bar.style.width=((stage+progress)/buildSteps.length*100)+'%';
+   document.querySelectorAll('#buildSteps span').forEach((el,i)=>el.classList.toggle('current',i===stage));
+   const title=document.getElementById('buildPartTitle'),desc=document.getElementById('buildPartDescription'),loc=document.getElementById('buildPartLocation'),pins=document.getElementById('buildPartPins');
+   if(title)title.textContent=step.part;
+   if(desc)desc.textContent=step.desc;
+   if(loc)loc.textContent='Ubicación: '+step.loc;
+   if(pins)pins.textContent=step.pins;
+   if(assembly){
+     const target=new THREE.Vector3(...step.focus);
+     const dir=new THREE.Vector3(1,0.72,1).normalize().multiplyScalar(step.zoom);
+     camera.position.copy(target).add(dir);camera.lookAt(target);
+   }
+ }
+ function resize(){const w=Math.max(1,frame.clientWidth),h=Math.max(1,frame.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+ const ro=new ResizeObserver(resize);ro.observe(frame);resize();
+ canvas.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});
+ canvas.addEventListener('pointermove',e=>{if(!drag)return;ry+=(e.clientX-lastX)*.008;rx=Math.max(-.55,Math.min(.35,rx+(e.clientY-lastY)*.005));lastX=e.clientX;lastY=e.clientY});
+ canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);
+ canvas.addEventListener('wheel',e=>{e.preventDefault();camera.position.multiplyScalar(e.deltaY>0?1.06:.94);camera.position.clampLength(4.2,13)},{passive:false});
+ function animate(now){requestAnimationFrame(animate);if(assembly&&playing){const elapsed=now-startTime;const t=Math.min(totalDuration,elapsed);const st=stageAt(t);if(st!==stage||Math.floor(t/180)%3===0)applyStage(st,t);if(t>=totalDuration){playing=false;window.dispatchEvent(new CustomEvent('smartclean-build-finished'))}}
+   if(!drag){if(!assembly)ry+=.0022;group.rotation.y=ry;group.rotation.x=rx}
+   if(!assembly){const wrapper=document.getElementById('bin3d');const isOpen=wrapper?.classList.contains('open');lidPivot.rotation.x=THREE.MathUtils.lerp(lidPivot.rotation.x,isOpen?-.85:0,.08);const p=parseFloat(document.getElementById('percent')?.textContent||'35')/100;fill.scale.y=Math.max(.02,p);fill.position.y=.08+(p*1.1)/2}
+   renderer.render(scene,camera)}
+ requestAnimationFrame(animate);
+ return {rotate(delta){ry+=delta},resetView(){ry=-.35;rx=-.12},restart(){playing=false;pausedAt=0;startTime=performance.now();applyStage(0,0);const b=document.getElementById('playBuild');if(b)b.textContent='▶ Reproducir ensamblaje'},play(){if(stage>=buildSteps.length-1)this.restart();if(!playing)this.toggle()},toggle(){if(playing){playing=false;pausedAt=performance.now()-startTime;const b=document.getElementById('playBuild');if(b)b.textContent='▶ Reproducir ensamblaje'}else{if(stage>=buildSteps.length-1){pausedAt=0;applyStage(0,0)}playing=true;startTime=performance.now()-pausedAt;const b=document.getElementById('playBuild');if(b)b.textContent='Ⅱ Pausar ensamblaje'}},next(){playing=false;pausedAt=0;applyStage(Math.min(buildSteps.length-1,stage+1),Math.min(totalDuration,(stage+1)*stageDuration));startTime=performance.now()-Math.min(totalDuration,(stage+1)*stageDuration);const b=document.getElementById('playBuild');if(b)b.textContent='▶ Reproducir ensamblaje'},setStage(st){applyStage(st)}};
+}
+function blueMaterial(){return new THREE.MeshStandardMaterial({color:0x343d4b,metalness:.35,roughness:.5})}
+const monitor=makeScene('monitorModel3D','bin3d',false);
+const assembly=makeScene('assemblyModel3D','assemblyModelFrame',true);
+if(monitor){document.getElementById('rotateBinLeft')?.addEventListener('click',()=>monitor.rotate(-.45));document.getElementById('rotateBinRight')?.addEventListener('click',()=>monitor.rotate(.45));document.getElementById('resetBinView')?.addEventListener('click',()=>monitor.resetView())}
+if(assembly){
+ const stepHost=document.getElementById('buildSteps');
+ if(stepHost){stepHost.innerHTML=buildSteps.map((step,i)=>`<span>${String(i+1).padStart(2,'0')}. ${step.part}</span>`).join('')}
+ assembly.setStage(0);window.smartCleanAssembly=assembly;
+ document.getElementById('nextBuild')?.addEventListener('click',()=>assembly.next());
+ document.getElementById('restartBuild')?.addEventListener('click',()=>assembly.restart());
+ document.getElementById('playBuild')?.addEventListener('click',()=>assembly.toggle());
+}
+</script>
+
+</body></html>
